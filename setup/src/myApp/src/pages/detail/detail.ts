@@ -1,7 +1,51 @@
 import { Component, NgZone } from '@angular/core';
-import { NavController, NavParams, AlertController, LoadingController } from 'ionic-angular';
+import { Platform, NavController, NavParams, AlertController, LoadingController } from 'ionic-angular';
 import { BLE } from '@ionic-native/ble';
 import { NativeStorage } from '@ionic-native/native-storage';
+import { Subscription } from 'rxjs';
+
+const CAM_TRIGGER_SETTING_HEAD = 'Trigger Source';
+const CAM_TRIGGER_SETTING_TEXT = "This setting configures the source for the camera trigger.\
+\nChoose 'Motion Only' to trigger the camera on detection of animal motion.\
+\nChoose 'Time Lapse Only' to trigger the camera periodically after a specified amount of time. \
+\nPlease write to us if you need both simultaneously.";
+
+const TIMER_INTERVAL_HEAD = 'Time-Lapse Interval';
+const TIMER_INTERVAL_TEXT = 'Enter the time in seconds after which the camera should trigger repeatedly';
+
+const OPER_MODE_HEAD = 'Operating Mode';
+const OPER_MODE_TEXT = "Choose when the camera should be triggered based on the ambient light. \
+For an always-on device, please choose 'Day and Night'. \
+In the case of 'Day Only' and 'Night Only', there is an option to 'Include Twilight', \
+which will enable operation in the transitioning low-light conditions also.";
+
+const TRIGGER_MODE_PIR_HEAD = 'Trigger Mode';
+const TRIGGER_MODE_PIR_TEXT = "This setting configures how the camera is triggered. \
+In 'Single Shot' the shutter button activated once, usually to take a single image. \
+In 'Multi-Shot' the shutter button is activated two or more times at an interval specified. \
+In 'Long Press' the shutter button is held for the duration specified. \
+In 'Video Mode' the shutter button is activated two times at the interval specified. \
+In case motion is detected at the end of the video interval the end shutter button press can be delayed by the extension duration for three times. \
+In 'Half Press (Focus)' the half press of the shutter button is done which usually focuses the camera. \
+Note that based on the settings on the camera different outcomes can be achieved for each mode.";
+
+const TRIGGER_MODE_TIMER_HEAD = 'Trigger Mode';
+const TRIGGER_MODE_TIMER_TEXT = "This setting configures how the camera is triggered. \
+In 'Single Shot' the shutter button activated once, usually to take a single image. \
+In 'Multi-Shot' the shutter button is activated two or more times at an interval specified. \
+In 'Long Press' the shutter button is held for the duration specified. \
+In 'Video Mode' the shutter button is activated two times at the interval specified. \
+In 'Half Press (Focus)' the half press of the shutter button is done which usually focuses the camera. \
+Note that based on the settings on the camera different outcomes can be achieved for each mode.";
+
+const SENSITIVITY_HEAD = 'Sensor Sensitivity';
+const SENSITIVITY_TEXT = "This setting configures how sensitive SensePi's motion sensing is. \
+If you're using the narrow-angle SensePi, set it to 1 or 2 as its detection range is quite high. \
+In case the SensePi is wide-angle, the maximum detection range varies from 5-6 m to 14-15 m by changing the sensitivity. \
+Increasing the sensitivity can help detect smaller animals, though could seldom cause false triggers too. ";
+
+const INTERTRIGGERTIME_HEAD = 'Inter-Trigger Time';
+const INTERTRIGGERTIME_TEXT = "This setting specifies the amount of time the motion sensor should be switched off after motion detection.";
 
 // TBD : these shd be common to home.ts too : figure out how to share common header file
 const APPIKO_DUMMY_DEVICE_MAC = 'AA:BB:CC:DD:EE:FF';
@@ -47,6 +91,10 @@ const OFFSET_TIMER_MODE_BULB_EXPOSURE=14;
 const OFFSET_TIMER_MODE_VIDEO_DURATION=14;
 const OFFSET_TIMER_MODE_VIDEO_EXTENSION=16;
 
+const DAY_TWILIGHT_THRESHOLD = 12;
+const NIGHT_TWILIGHT_THRESHOLD = 31;
+const DAY_NIGHT_THRESHOLD = 22;
+
 enum TIME_SETTING {
   NIGHT_ONLY,
   DAY_ONLY,
@@ -67,12 +115,30 @@ enum TRIGGER_SETTING {
   TRIGGER_BOTH  
 }
 
+enum HELPER_BTN_ID {
+  CAM_TRIGGER_SETTING=0,
+  TIMER_INTERVAL,
+  OPER_MODE,
+  TRIGGER_MODE_PIR,
+  TRIGGER_MODE_TIMER,
+  SENSITIVITY,
+  INTERTRIGGERTIME
+}
+
 @Component({
   selector: 'page-detail',
   templateUrl: 'detail.html',
 })
 export class DetailPage {
-  
+
+  readonly HB_CAM_TRIGGER_SETTING = HELPER_BTN_ID.CAM_TRIGGER_SETTING;
+  readonly HB_TIMER_INTERVAL = HELPER_BTN_ID.TIMER_INTERVAL;
+  readonly HB_OPER_MODE = HELPER_BTN_ID.OPER_MODE;
+  readonly HB_TRIGGER_MODE_PIR = HELPER_BTN_ID.TRIGGER_MODE_PIR;
+  readonly HB_TRIGGER_MODE_TIMER = HELPER_BTN_ID.TRIGGER_MODE_TIMER;
+  readonly HB_SENSITIVITY = HELPER_BTN_ID.SENSITIVITY;
+  readonly HB_INTERTRIGGERTIME = HELPER_BTN_ID.INTERTRIGGERTIME;
+
   realConnection: boolean = true;
 
   peripheral: any = {};
@@ -85,8 +151,10 @@ export class DetailPage {
   radioClickedTriggerBoth: boolean = false;
 
   timerInterval: number;
+  timerIntervalmin: number;
   timerOpertimeSetting: number;
-  timerDNThreshold: number;
+  timerDNTwilight: boolean = false;
+  timerShowTwilight : boolean = false;
   timerMode: number;
 
   timerBurstGap: number;
@@ -101,7 +169,8 @@ export class DetailPage {
   radioTimerClickedFocus: boolean = false;
   
   pirOpertimeSetting: number;
-  pirDNThreshold: number;
+  pirDNTwilight: boolean = false;
+  pirShowTwilight : boolean = false;
   pirMode: number;
   pirBurstGap: number;
   pirBurstNumber: number;
@@ -114,8 +183,7 @@ export class DetailPage {
   radioPirClickedVideo: boolean = false;
   radioPirClickedFocus: boolean = false;
 
-  pirThreshold: number;
-  pirAmplification: number;
+  pirSensitivity: number;
   pirInterTriggerTime: number;
 
   sysinfoFwVerMajor: number;
@@ -141,7 +209,6 @@ export class DetailPage {
 
     this.timerInterval=50;
     this.timerOpertimeSetting=2;
-    this.timerDNThreshold=0;
     this.timerMode=0;
     this.timerBurstGap=0;
     this.timerBurstNumber=0;
@@ -150,15 +217,13 @@ export class DetailPage {
     this.timerVideoExtension=0;
     
     this.pirOpertimeSetting=2;
-    this.pirDNThreshold=0;
     this.pirMode=0;
     this.pirBurstGap=0;
     this.pirBurstNumber=0;
     this.pirBulbExposureTime=0;
     this.pirVideoDuration=0;
     this.pirVideoExtension=0;
-    this.pirThreshold=100;
-    this.pirAmplification=31;
+    this.pirSensitivity=1;
     this.pirInterTriggerTime=5;
 
   }
@@ -169,8 +234,9 @@ export class DetailPage {
     private alertCtrl: AlertController,
     public loadingCtrl: LoadingController,
     private nstorage: NativeStorage,
-    private ngZone: NgZone) {
-      
+    private ngZone: NgZone,
+    platform: Platform) {
+
       this.initializeVars();
       let device = navParams.get('device');
   
@@ -211,7 +277,7 @@ export class DetailPage {
       this.initializeMakes();
       
     }
-    
+
     // When connection to the peripheral is successful
     onConnected(peripheral) {
       
@@ -285,9 +351,11 @@ export class DetailPage {
     public setTimerOpertimeSetting(event) {
       console.log('TIMER : timerOpertimeSetting : time was set to ' + event);
       this.timerOpertimeSetting = event;
-    }
-   public setTimerDNThreshold(event) {
-      console.log('Timer: DayNight Threshold set to ' + this.timerDNThreshold);
+      if(event == TIME_SETTING.DAYNIGHT_BOTH) {
+        this.timerShowTwilight = false;
+      } else {
+    this.timerShowTwilight = true;
+      }
     }
     
     public resetTimerModes() {
@@ -364,13 +432,14 @@ export class DetailPage {
     }
 
     // PIR settings
-
     public setPirOpertimeSetting(event) {
       console.log('Pir : PirOpertimeSetting : time was set to ' + event);
-      //this.pirOpertimeSetting = event;
-    }
-    public setPirDNThreshold(event) {
-      console.log('Pir: DayNight Threshold set to ' + this.pirDNThreshold);
+      this.pirOpertimeSetting = event;
+      if(event == TIME_SETTING.DAYNIGHT_BOTH) {
+        this.pirShowTwilight = false;
+      } else {
+    this.pirShowTwilight = true;
+      }
     }
    
     public resetPirModes() {
@@ -441,12 +510,8 @@ export class DetailPage {
       }
     }
 
-    public setPirThreshold(event) {
-      console.log('Pir: Threshold set to ' + this.pirThreshold);
-    }
- 
-    public setPirAmplification(event) {
-      console.log('Pir: Amplification set to ' + this.pirAmplification);
+    public setPirSensitivity(event) {
+      console.log('Pir: Threshold set to ' + this.pirSensitivity);
     }
 
     public setPirInterTriggerTime(event) {
@@ -476,8 +541,39 @@ export class DetailPage {
 
       this.triggerSetting = dataview.getUint8(OFFSET_TRIGGER_SETTING);
       
-      this.pirDNThreshold = (dataview.getUint8(OFFSET_PIR_OPER))>>1;
-      this.pirOpertimeSetting = dataview.getUint8(OFFSET_PIR_OPER) & 1;
+      switch(dataview.getUint8(OFFSET_PIR_OPER)) {
+        case ((DAY_NIGHT_THRESHOLD<<1)+(TIME_SETTING.DAY_ONLY)):
+          this.pirShowTwilight = true;
+          this.pirDNTwilight = false;
+          this.pirOpertimeSetting = TIME_SETTING.DAY_ONLY;
+          break;
+        case ((DAY_NIGHT_THRESHOLD<<1)+(TIME_SETTING.NIGHT_ONLY)):
+          this.pirShowTwilight = true;
+          this.pirDNTwilight = false;
+          this.pirOpertimeSetting = TIME_SETTING.NIGHT_ONLY;
+          break;
+        case ((DAY_TWILIGHT_THRESHOLD<<1)+(TIME_SETTING.DAY_ONLY)):
+          this.pirShowTwilight = true;
+          this.pirDNTwilight = true;
+          this.pirOpertimeSetting = TIME_SETTING.DAY_ONLY;
+          break;
+        case ((NIGHT_TWILIGHT_THRESHOLD<<1)+(TIME_SETTING.NIGHT_ONLY)):
+          this.pirShowTwilight = true;
+          this.pirDNTwilight = true;
+          this.pirOpertimeSetting = TIME_SETTING.NIGHT_ONLY;
+          break;
+        //This is how day & night is stored
+        case TIME_SETTING.DAY_ONLY:
+          this.pirShowTwilight = false;
+          this.pirDNTwilight = false;
+          this.pirOpertimeSetting = TIME_SETTING.DAYNIGHT_BOTH;
+          break;
+        default:
+          this.pirShowTwilight = false;
+          this.pirDNTwilight = false;
+          this.pirOpertimeSetting = TIME_SETTING.DAYNIGHT_BOTH;
+          break;
+      }
 
       this.pirMode = dataview.getUint8(OFFSET_PIR_MODE);
       
@@ -504,8 +600,43 @@ export class DetailPage {
           break;
         }
       } 
-      this.pirThreshold = dataview.getUint8(OFFSET_PIR_THRESHOLD);
-      this.pirAmplification = dataview.getUint8(OFFSET_PIR_AMPLIFICATION);
+      let pirThreshold = dataview.getUint8(OFFSET_PIR_THRESHOLD);
+      let pirAmplification = dataview.getUint8(OFFSET_PIR_AMPLIFICATION);
+
+//6. AMP 60 Thresh 100
+//5. AMP 40 Thresh 100
+//4. AMP 40 Thresh 175
+//3. AMP 20 Thresh 175
+//2. AMP 20 Thresh 250
+//1. AMP 00 Thresh 250
+      if(pirThreshold == 250) {
+        if(pirAmplification == 0) {
+          this.pirSensitivity = 1;
+        } else if(pirAmplification == 20) {
+          this.pirSensitivity = 2;
+        } else {
+          this.pirSensitivity = 1;
+        }
+      } else if(pirThreshold == 175) {
+        if(pirAmplification == 20) {
+          this.pirSensitivity = 3;
+        } else if(pirAmplification == 40) {
+          this.pirSensitivity = 4;
+        } else {
+          this.pirSensitivity = 1;
+        }
+      } else if(pirThreshold == 100) {
+        if(pirAmplification == 40) {
+          this.pirSensitivity = 5;
+        } else if(pirAmplification == 60) {
+          this.pirSensitivity = 6;
+        } else {
+          this.pirSensitivity = 1;
+        }
+      } else {
+        this.pirSensitivity = 1;
+      }
+
       this.pirInterTriggerTime = (dataview.getUint16(OFFSET_PIR_INTERTRIGGERTIME, true))/10;
       
       //dataview.setUint8(OFFSET_MAKE, this.make); 
@@ -513,9 +644,40 @@ export class DetailPage {
       // ==== TIMER SETTINGS ++++
       this.timerInterval = (dataview.getUint16(OFFSET_TIMER_INTERVAL, true))/10;
       
-      this.timerDNThreshold = (dataview.getUint8(OFFSET_TIMER_OPER))>>1;
-      this.timerOpertimeSetting = dataview.getUint8(OFFSET_TIMER_OPER) & 1;
-      
+      switch(dataview.getUint8(OFFSET_TIMER_OPER)) {
+        case ((DAY_NIGHT_THRESHOLD<<1)+(TIME_SETTING.DAY_ONLY)):
+          this.timerShowTwilight = true;
+          this.timerDNTwilight = false;
+          this.timerOpertimeSetting = TIME_SETTING.DAY_ONLY;
+          break;
+        case ((DAY_NIGHT_THRESHOLD<<1)+(TIME_SETTING.NIGHT_ONLY)):
+          this.timerShowTwilight = true;
+          this.timerDNTwilight = false;
+          this.timerOpertimeSetting = TIME_SETTING.NIGHT_ONLY;
+          break;
+        case ((DAY_TWILIGHT_THRESHOLD<<1)+(TIME_SETTING.DAY_ONLY)):
+          this.timerShowTwilight = true;
+          this.timerDNTwilight = true;
+          this.timerOpertimeSetting = TIME_SETTING.DAY_ONLY;
+          break;
+        case ((NIGHT_TWILIGHT_THRESHOLD<<1)+(TIME_SETTING.NIGHT_ONLY)):
+          this.timerShowTwilight = true;
+          this.timerDNTwilight = true;
+          this.timerOpertimeSetting = TIME_SETTING.NIGHT_ONLY;
+          break;
+        //This is how day & night is stored
+        case TIME_SETTING.DAY_ONLY:
+          this.timerShowTwilight = false;
+          this.timerDNTwilight = false;
+          this.timerOpertimeSetting = TIME_SETTING.DAYNIGHT_BOTH;
+          break;
+        default:
+          this.timerShowTwilight = false;
+          this.timerDNTwilight = false;
+          this.timerOpertimeSetting = TIME_SETTING.DAYNIGHT_BOTH;
+          break;
+      }
+
       this.timerMode = dataview.getUint8(OFFSET_TIMER_MODE);
       
       switch (+this.timerMode) {
@@ -558,9 +720,9 @@ export class DetailPage {
 
       if(this.sysinfoBattVolt > 2.3)
       {
-      	this.sysinfoBattOK = '👍';
+        this.sysinfoBattOK = '👍';
       } else {
-		this.sysinfoBattOK = '👎';
+    this.sysinfoBattOK = '👎';
       }
 
       console.log('sysinfoBattVolt' + this.sysinfoBattVolt + typeof(this.sysinfoBattVolt));
@@ -615,13 +777,9 @@ export class DetailPage {
       
       // === TIMER Settings ===
       console.log('TIMER timerInterval (2 bytes)= ' + dataview.getUint16(OFFSET_TIMER_INTERVAL, true));
-      
-      if (dataview.getUint8(OFFSET_TIMER_OPER) == 1) {
-        console.log("TIMER DN mode = both");
-      } else {
-        console.log('TIMER OpertimeSetting DN threshold = ' + (dataview.getUint8(OFFSET_TIMER_OPER)>>1));
-        console.log('TIMER OpertimeSetting DN mode = ' + (dataview.getUint8(OFFSET_TIMER_OPER)&1));  
-      }
+
+      console.log('TIMER OpertimeSetting DN threshold = ' + (dataview.getUint8(OFFSET_TIMER_OPER)>>1));
+      console.log('TIMER OpertimeSetting DN mode = ' + (dataview.getUint8(OFFSET_TIMER_OPER)&1));
       
       console.log('TIMER mode (1 byte)= ' + dataview.getUint8(OFFSET_TIMER_MODE));
       switch(+dataview.getUint8(OFFSET_TIMER_MODE)) {
@@ -668,14 +826,25 @@ export class DetailPage {
       dataview.setUint8(OFFSET_TRIGGER_SETTING, this.triggerSetting);
 
       // ==== PIR SETTINGS ++++
+      let pirOperTimeVal;
       if (this.pirOpertimeSetting == TIME_SETTING.DAYNIGHT_BOTH) {
-        dataview.setUint8(OFFSET_PIR_OPER, 1);
-      } else {
-        dataview.setUint8(OFFSET_PIR_OPER, ((this.pirDNThreshold<<1) + (this.pirOpertimeSetting&0x01)));
-        console.log('PIR DNT = ' + (this.pirDNThreshold<<1) + ' + ' + this.pirOpertimeSetting + ' = ' + 
-          (((this.pirDNThreshold<<1) + (this.pirOpertimeSetting&0x01))));
+        pirOperTimeVal = 1;
+      } else if (this.pirOpertimeSetting == TIME_SETTING.DAY_ONLY) {
+        if(this.pirDNTwilight == true) {
+          pirOperTimeVal = ((DAY_TWILIGHT_THRESHOLD<<1) + (this.pirOpertimeSetting&0x01));
+        } else {
+          pirOperTimeVal = ((DAY_NIGHT_THRESHOLD<<1) + (this.pirOpertimeSetting&0x01));
+        }
+      } else if (this.pirOpertimeSetting == TIME_SETTING.NIGHT_ONLY) {
+        if(this.pirDNTwilight == true) {
+          pirOperTimeVal = ((NIGHT_TWILIGHT_THRESHOLD<<1) + (this.pirOpertimeSetting&0x01));
+        } else {
+          pirOperTimeVal = ((DAY_NIGHT_THRESHOLD<<1) + (this.pirOpertimeSetting&0x01));
+        }
       }
-      
+      dataview.setUint8(OFFSET_PIR_OPER, pirOperTimeVal);
+      console.log('PIR DNT = ' + (pirOperTimeVal>>1) + ' + ' + this.pirOpertimeSetting + ' = ' + (pirOperTimeVal));
+
       dataview.setUint8(OFFSET_PIR_MODE,this.pirMode);
       
       switch (+this.pirMode) {
@@ -703,9 +872,44 @@ export class DetailPage {
         default: {
           break;
         }
-      } 
-      dataview.setUint8(OFFSET_PIR_THRESHOLD, this.pirThreshold);
-      dataview.setUint8(OFFSET_PIR_AMPLIFICATION, this.pirAmplification);
+      }
+      let pirThreshold;
+      let pirAmplification;
+
+      switch(this.pirSensitivity) {
+        case 1:
+          pirThreshold = 250;
+          pirAmplification = 0;
+          break;
+        case 2:
+          pirThreshold = 250;
+          pirAmplification = 20;
+          break;
+        case 3:
+          pirThreshold = 175;
+          pirAmplification = 20;
+          break;
+        case 4:
+          pirThreshold = 175;
+          pirAmplification = 40;
+          break;
+        case 5:
+          pirThreshold = 100;
+          pirAmplification = 40;
+          break;
+        case 6:
+          pirThreshold = 100;
+          pirAmplification = 60;
+          break;
+        default:
+          pirThreshold = 250;
+          pirAmplification = 0;
+          break;
+      }
+
+
+      dataview.setUint8(OFFSET_PIR_THRESHOLD, pirThreshold);
+      dataview.setUint8(OFFSET_PIR_AMPLIFICATION, pirAmplification);
       dataview.setUint16(OFFSET_PIR_INTERTRIGGERTIME, (this.pirInterTriggerTime*10), true); 
       
       //dataview.setUint8(OFFSET_MAKE, this.make); 
@@ -713,13 +917,26 @@ export class DetailPage {
       // ==== TIMER SETTINGS ++++
       dataview.setUint16(OFFSET_TIMER_INTERVAL, (this.timerInterval*10), true);
       
+
+      let timerOperTimeVal;
       if (this.timerOpertimeSetting == TIME_SETTING.DAYNIGHT_BOTH) {
-        dataview.setUint8(OFFSET_TIMER_OPER, 1);
-      } else {
-        dataview.setUint8(OFFSET_TIMER_OPER, ((this.timerDNThreshold<<1) + (this.timerOpertimeSetting&0x01)));
-        console.log('TIMER DNT = ' + (this.timerDNThreshold<<1) + ' + ' + this.timerOpertimeSetting + ' = ' + 
-          (((this.timerDNThreshold<<1) + (this.timerOpertimeSetting&0x01))));
+        timerOperTimeVal = 1;
+      } else if (this.timerOpertimeSetting == TIME_SETTING.DAY_ONLY) {
+        if(this.timerDNTwilight == true) {
+          timerOperTimeVal = ((DAY_TWILIGHT_THRESHOLD<<1) + (this.timerOpertimeSetting&0x01));
+        } else {
+          timerOperTimeVal = ((DAY_NIGHT_THRESHOLD<<1) + (this.timerOpertimeSetting&0x01));
+        }
+      } else if (this.timerOpertimeSetting == TIME_SETTING.NIGHT_ONLY) {
+        if(this.timerDNTwilight == true) {
+          timerOperTimeVal = ((NIGHT_TWILIGHT_THRESHOLD<<1) + (this.timerOpertimeSetting&0x01));
+        } else {
+          timerOperTimeVal = ((DAY_NIGHT_THRESHOLD<<1) + (this.timerOpertimeSetting&0x01));
+        }
       }
+      dataview.setUint8(OFFSET_TIMER_OPER, timerOperTimeVal);
+      console.log('PIR DNT = ' + (timerOperTimeVal>>1) + ' + ' + this.timerOpertimeSetting + ' = ' +
+          (timerOperTimeVal));
       
       dataview.setUint8(OFFSET_TIMER_MODE,this.timerMode);
       
@@ -763,7 +980,6 @@ export class DetailPage {
       this.nstorage.setItem('TRIGGER_SETTING', this.triggerSetting);
       this.nstorage.setItem('TIMER_INTERVAL', this.timerInterval);
       this.nstorage.setItem('TIMER_OPERSETTING', this.timerOpertimeSetting);
-      this.nstorage.setItem('TIMER_DNTHRESHOLD', this.timerDNThreshold);
       this.nstorage.setItem('TIMER_MODE', this.timerMode);
       this.nstorage.setItem('TIMER_BURSTGAP', this.timerBurstGap);
       this.nstorage.setItem('TIMER_BURSTNUMBER', this.timerBurstNumber);
@@ -771,15 +987,12 @@ export class DetailPage {
       this.nstorage.setItem('TIMER_VIDEODURATION', this.timerVideoDuration);
       this.nstorage.setItem('TIMER_VIDEO_EXTENSION', this.timerVideoExtension);
       this.nstorage.setItem('PIR_OPERSETTING', this.pirOpertimeSetting);
-      this.nstorage.setItem('PIR_DNTHRESHOLD', this.pirDNThreshold);
       this.nstorage.setItem('PIR_MODE', this.pirMode);
       this.nstorage.setItem('PIR_BURSTGAP', this.pirBurstGap);
       this.nstorage.setItem('PIR_BURSTNUMBER', this.pirBurstNumber);
       this.nstorage.setItem('PIR_BULBEXPOSURE', this.pirBulbExposureTime);
       this.nstorage.setItem('PIR_VIDEODURATION', this.pirVideoDuration);
       this.nstorage.setItem('PIR_VIDEOEXTENSION', this.pirVideoExtension);
-      this.nstorage.setItem('PIR_THRESHOLD', this.pirThreshold);
-      this.nstorage.setItem('PIR_AMPLIFICATION', this.pirAmplification);
       this.nstorage.setItem('PIR_INTERTRIGGERTIME', this.pirInterTriggerTime);
     }
 
@@ -790,7 +1003,6 @@ export class DetailPage {
 
       this.timerInterval = await this.nstorage.getItem('TIMER_INTERVAL');
       this.timerOpertimeSetting = await this.nstorage.getItem('TIMER_OPERSETTING');
-      this.timerDNThreshold = await this.nstorage.getItem('TIMER_DNTHRESHOLD');
       this.timerMode = await this.nstorage.getItem('TIMER_MODE');
       this.timerBurstGap = await this.nstorage.getItem('TIMER_BURSTGAP');
       this.timerBurstNumber = await this.nstorage.getItem('TIMER_BURSTNUMBER');
@@ -798,15 +1010,12 @@ export class DetailPage {
       this.timerVideoDuration = await this.nstorage.getItem('TIMER_VIDEODURATION');
       this.timerVideoExtension = await this.nstorage.getItem('TIMER_VIDEO_EXTENSION');
       this.pirOpertimeSetting = await this.nstorage.getItem('PIR_OPERSETTING');
-      this.pirDNThreshold = await this.nstorage.getItem('PIR_DNTHRESHOLD');
       this.pirMode = await this.nstorage.getItem('PIR_MODE');
       this.pirBurstGap = await this.nstorage.getItem('PIR_BURSTGAP');
       this.pirBurstNumber = await this.nstorage.getItem('PIR_BURSTNUMBER');
       this.pirBulbExposureTime = await this.nstorage.getItem('PIR_BULBEXPOSURE');
       this.pirVideoDuration = await this.nstorage.getItem('PIR_VIDEODURATION');
       this.pirVideoExtension = await this.nstorage.getItem('PIR_VIDEOEXTENSION');
-      this.pirThreshold = await this.nstorage.getItem('PIR_THRESHOLD');
-      this.pirAmplification = await this.nstorage.getItem('PIR_AMPLIFICATION');
       this.pirInterTriggerTime = await this.nstorage.getItem('PIR_INTERTRIGGERTIME');
       
     }
@@ -823,12 +1032,10 @@ export class DetailPage {
       .catch(
         e => console.log('error in writing to device : ' + e),
       );
-       
     }
-  
     
-    // Disconnect peripheral when leaving the page
-    ionViewWillLeave() {
+    //Disconnect from the connected peripheral
+    disconnectSensePiBLE() {
       if (!this.realConnection) {
         console.log("Leaving, no ble to disconnect");
         return;
@@ -841,7 +1048,43 @@ export class DetailPage {
         () => console.log('ERROR disconnecting ' + JSON.stringify(this.peripheral))
       )
     }
-    
+
+    // To write the value of each characteristic to the device 
+    onButtonClickClose(event) {
+      this.navCtrl.pop();
+    }
+
+    // Disconnect peripheral when leaving the page
+    ionViewWillLeave() {
+      this.disconnectSensePiBLE();
+    }
+
+    helperBtnClick(id) {
+      switch(id) {
+        case HELPER_BTN_ID.CAM_TRIGGER_SETTING:
+          this.showAlert(CAM_TRIGGER_SETTING_HEAD, CAM_TRIGGER_SETTING_TEXT);
+          break;
+        case HELPER_BTN_ID.TIMER_INTERVAL:
+          this.showAlert(TIMER_INTERVAL_HEAD, TIMER_INTERVAL_TEXT);
+          break;
+        case HELPER_BTN_ID.OPER_MODE:
+          this.showAlert(OPER_MODE_HEAD, OPER_MODE_TEXT);
+          break;
+        case HELPER_BTN_ID.TRIGGER_MODE_PIR:
+          this.showAlert(TRIGGER_MODE_PIR_HEAD, TRIGGER_MODE_PIR_TEXT);
+          break;
+        case HELPER_BTN_ID.TRIGGER_MODE_TIMER:
+          this.showAlert(TRIGGER_MODE_TIMER_HEAD, TRIGGER_MODE_TIMER_TEXT);
+          break;
+        case HELPER_BTN_ID.SENSITIVITY:
+          this.showAlert(SENSITIVITY_HEAD, SENSITIVITY_TEXT);
+          break;
+        case HELPER_BTN_ID.INTERTRIGGERTIME:
+          this.showAlert(INTERTRIGGERTIME_HEAD, INTERTRIGGERTIME_TEXT);
+          break;
+      }
+    }
+
     // To alert messages on the screen
     showAlert(title, message) {
       let alert = this.alertCtrl.create({
