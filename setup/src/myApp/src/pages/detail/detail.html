@@ -280,13 +280,19 @@
       <button ion-button color="primary" clear icon-only small round class="helper-btn" (click)="helperBtnClick(HB_SENSITIVITY)">
         <ion-icon name='help-circle'></ion-icon>
       </button>
-      Sensitivity <ion-badge color="primary" item-end>{{pirSensitivity}}</ion-badge>
+      Beam Window <ion-badge color="primary" item-end>{{beamWindow}}</ion-badge>
     </ion-card-header>
-    <ion-item>      
-      <ion-range min="1" max="6" pin="true" [(ngModel)]="pirSensitivity" ng-init="pirSensitivity=1" (ionChange)="setPirSensitivity($event)">
-        <ion-label range-left>MIN</ion-label>
-        <ion-label range-right>MAX</ion-label>
+    <ion-item>
+      <ion-label color="dark"> SenseBe Window (ms) </ion-label>
+      <ion-input type=number [(ngModel)]="beamWindow" ng-init="pirInterTriggerTime=5" placeholder="ms"> 
+      </ion-input>   
+      <!-- Removing range as steps of 0.1s difficult to select in a range -->
+      <!--
+      <ion-range min="5" max="600" pin="true" step="10" snaps="true" [(ngModel)]="pirInterTriggerTime" (ionChange)="setPirInterTriggerTime($event)">
+        <ion-icon range-left small name="time"></ion-icon>
+        <ion-icon range-right name="time"></ion-icon>
       </ion-range>
+    -->
     </ion-item>
   </ion-card>
 

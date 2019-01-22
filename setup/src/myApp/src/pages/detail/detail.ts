@@ -192,6 +192,8 @@ export class DetailPage {
   sysinfoBattVolt: number;
   sysinfoBattOK: string;
   
+  beamWindow: number;
+
   public buttonColor: string = "plain";
     
   makes: any[];
@@ -637,6 +639,8 @@ export class DetailPage {
         this.pirSensitivity = 1;
       }
 
+      this.beamWindow = dataview.getUint16(OFFSET_PIR_THRESHOLD, true);
+
       this.pirInterTriggerTime = (dataview.getUint16(OFFSET_PIR_INTERTRIGGERTIME, true))/10;
       
       //dataview.setUint8(OFFSET_MAKE, this.make); 
@@ -910,6 +914,9 @@ export class DetailPage {
 
       dataview.setUint8(OFFSET_PIR_THRESHOLD, pirThreshold);
       dataview.setUint8(OFFSET_PIR_AMPLIFICATION, pirAmplification);
+
+      dataview.setUint16(OFFSET_PIR_THRESHOLD, this.beamWindow, true);
+
       dataview.setUint16(OFFSET_PIR_INTERTRIGGERTIME, (this.pirInterTriggerTime*10), true); 
       
       //dataview.setUint8(OFFSET_MAKE, this.make); 
