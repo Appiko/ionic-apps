@@ -377,8 +377,9 @@ export class DetailPage {
       if(event == TIME_SETTING.DAYNIGHT_BOTH) {
         this.timerShowTwilight = false;
       } else {
-    this.timerShowTwilight = true;
+        this.timerShowTwilight = true;
       }
+      this.cd.detectChanges();
     }
     
     public resetTimerModes() {
@@ -448,6 +449,7 @@ export class DetailPage {
           break; 
         } 
       }
+      this.cd.detectChanges();
     }
   
     public setTriggerTimerInterval(event) {
@@ -461,8 +463,9 @@ export class DetailPage {
       if(event == TIME_SETTING.DAYNIGHT_BOTH) {
         this.pirShowTwilight = false;
       } else {
-    this.pirShowTwilight = true;
+        this.pirShowTwilight = true;
       }
+      this.cd.detectChanges();
     }
    
     public resetPirModes() {
@@ -531,6 +534,7 @@ export class DetailPage {
           break; 
         } 
       }
+      this.cd.detectChanges();
     }
 
     public setPirSensitivity(event) {
