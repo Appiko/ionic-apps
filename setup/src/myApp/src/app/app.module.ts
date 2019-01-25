@@ -7,7 +7,6 @@ import { NativeStorage } from '@ionic-native/native-storage';
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { DetailPage } from '../pages/detail/detail';
-import { DebugPage } from '../pages/debug/debug';
 import { AboutPage } from '../pages/about/about';
 import { HelpPage } from '../pages/help/help';
 import {TestConfigPage} from '../pages/test-config/test-config';
@@ -20,7 +19,6 @@ import { SplashScreen } from '@ionic-native/splash-screen';
     MyApp,
     HomePage,
     DetailPage,
-    DebugPage,
     AboutPage,
     HelpPage,
     TestConfigPage
@@ -34,7 +32,6 @@ import { SplashScreen } from '@ionic-native/splash-screen';
     MyApp,
     HomePage,
     DetailPage,
-    DebugPage,
     AboutPage,
     HelpPage,
     TestConfigPage
