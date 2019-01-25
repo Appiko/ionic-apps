@@ -321,7 +321,6 @@ export class DetailPage {
         this.ble.write(this.peripheral.id, UUID_SENSE_PI_SERVICE, UUID_SENSE_PI_USER_SETTINGS, data).then(
           () =>
           {
-            this.setStatus('Write Success');
             if(this.triggerSetting == TRIGGER_MOTION){
               this.isMotion = true;
             } else {
@@ -538,6 +537,7 @@ export class DetailPage {
     }
 
     public setPirSensitivity(event) {
+      this.cd.detectChanges();
       console.log('Pir: Threshold set to ' + this.pirSensitivity);
     }
 
