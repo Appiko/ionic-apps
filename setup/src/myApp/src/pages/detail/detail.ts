@@ -1,5 +1,5 @@
-import { Component, NgZone } from '@angular/core';
-import { Platform, NavController, NavParams, AlertController, LoadingController } from 'ionic-angular';
+import { Component, NgZone, ChangeDetectorRef } from '@angular/core';
+import { Platform, NavController, NavParams, AlertController, LoadingController, ToastController } from 'ionic-angular';
 import { BLE } from '@ionic-native/ble';
 import { NativeStorage } from '@ionic-native/native-storage';
 import { Subscription } from 'rxjs';
@@ -49,7 +49,7 @@ const INTERTRIGGERTIME_TEXT = "This setting specifies the amount of time the mot
 
 // TBD : these shd be common to home.ts too : figure out how to share common header file
 const APPIKO_DUMMY_DEVICE_MAC = 'AA:BB:CC:DD:EE:FF';
-const APPIKO_DUMMY_DEVICE_NAME = 'Dummy Device (Sample to view config options)';
+const APPIKO_DUMMY_DEVICE_NAME = 'Dummy Device';
 
 // Bluetooth UUIDs
 const UUID_SENSE_PI_SERVICE = '3c73dc50-07f5-480d-b066-837407fbde0a';
@@ -61,6 +61,9 @@ const FW_VER='1.0';
 const CAMERA_MAKE_NIKON=1;
 const CAMERA_MAKE_CANON=2;
 const CAMERA_MAKE_SONY=3;
+
+const TRIGGER_TIMER = 0;
+const TRIGGER_MOTION = 1;
 
 const SENSEPI_SETTINGS_LENGTH=17;
 
@@ -193,6 +196,8 @@ export class DetailPage {
   sysinfoBattOK: string;
   
   public buttonColor: string = "plain";
+
+  private isMotion: boolean = true;
     
   makes: any[];
   
@@ -235,7 +240,9 @@ export class DetailPage {
     public loadingCtrl: LoadingController,
     private nstorage: NativeStorage,
     private ngZone: NgZone,
-    platform: Platform) {
+    platform: Platform,
+    public toastCtrl: ToastController,
+    private cd:ChangeDetectorRef) {
 
       this.initializeVars();
       let device = navParams.get('device');
@@ -267,9 +274,9 @@ export class DetailPage {
             loading.dismiss();
           },
           peripheral => {
-            this.showAlert('Disconnected', 'The peripheral unexpectedly disconnected. Pls scan and try again');
+            this.showAlert('Disconnected', 'The peripheral unexpectedly disconnected. Please scan and try again.');
             loading.dismiss();
-            this.navCtrl.pop();  
+            this.navCtrl.pop();
           }
         );
       }
@@ -288,7 +295,7 @@ export class DetailPage {
       //once connected, read the current config on the device.
       this.ble.read(this.peripheral.id, UUID_SENSE_PI_SERVICE, UUID_SENSE_PI_USER_SETTINGS).then(
         data => {
-          console.log("read the config from the sensepi "),
+          console.log("read the config from the sensepi " + JSON.stringify(data)),
           console.log("====================== SETTINGS READ AND LOADED FROM THE DEVICE =================="),
           this.print_settings_arraybufffer(data),
           this.loadDeviceConfigs(data)
@@ -308,10 +315,25 @@ export class DetailPage {
          (e) => console.log("Error trying to read data from service " + UUID_SENSE_PI_SERVICE + " and char " + UUID_SENSE_PI_USER_SETTINGS + " : " + e)
       );
 
-      //pnarasim : why this?
-      /*this.ble.startNotification(this.peripheral.id, UUID_SENSE_PI_SERVICE, UUID_SENSE_PI_USER_SETTINGS).subscribe(
-        () => this.showAlert('Unexpected Error', 'Failed to subscribe')
-      )*/
+       setTimeout(() => {
+        let data = this.constructArrayBufferToWrite();
+        console.log('Uninitiated writeback of existing settings of len' + data.byteLength);
+        this.ble.write(this.peripheral.id, UUID_SENSE_PI_SERVICE, UUID_SENSE_PI_USER_SETTINGS, data).then(
+          () =>
+          {
+            this.setStatus('Write Success');
+            if(this.triggerSetting == TRIGGER_MOTION){
+              this.isMotion = true;
+            } else {
+              this.isMotion = false;
+            }
+          },
+          //console.log('Wrote all settings to the device = ' + data)
+        )
+        .catch(
+          e => console.log('error in writing to device : ' + e),
+        );
+      }, 3000);
       
     }
   
@@ -346,6 +368,7 @@ export class DetailPage {
           break;
         }
       }
+      this.cd.detectChanges();
     }
 
     public setTimerOpertimeSetting(event) {
@@ -540,6 +563,12 @@ export class DetailPage {
       var dataview = new DataView(config);
 
       this.triggerSetting = dataview.getUint8(OFFSET_TRIGGER_SETTING);
+
+      if(this.triggerSetting == TRIGGER_MOTION){
+        this.isMotion = true;
+      } else {
+        this.isMotion = false;
+      }
       
       switch(dataview.getUint8(OFFSET_PIR_OPER)) {
         case ((DAY_NIGHT_THRESHOLD<<1)+(TIME_SETTING.DAY_ONLY)):
@@ -735,6 +764,8 @@ export class DetailPage {
 
 
     public print_settings_arraybufffer(writeBuffer:ArrayBuffer) {
+
+      console.log(Array.prototype.map.call(new Uint8Array(writeBuffer), x => ('00' + x.toString(16)).slice(-2)).join(''));
 
       var dataview = new DataView(writeBuffer);
 
@@ -1026,7 +1057,15 @@ export class DetailPage {
       let data = this.constructArrayBufferToWrite();  
       console.log("Size of buffer being written is " + data.byteLength);    
       this.ble.write(this.peripheral.id, UUID_SENSE_PI_SERVICE, UUID_SENSE_PI_USER_SETTINGS, data).then(
-        () => this.setStatus('Write Success'),
+        () => 
+        {
+          this.setStatus('Write Success');
+          if(this.triggerSetting == TRIGGER_MOTION){
+            this.isMotion = true;
+          } else {
+            this.isMotion = false;
+          }
+        },
         //console.log('Wrote all settings to the device = ' + data)
       )
       .catch(
@@ -1051,6 +1090,9 @@ export class DetailPage {
 
     // To write the value of each characteristic to the device 
     onButtonClickClose(event) {
+      if(this.isMotion){
+        this.showToast('Red light will blink on detecting motion for 10 minutes');
+      }
       this.navCtrl.pop();
     }
 
@@ -1083,6 +1125,15 @@ export class DetailPage {
           this.showAlert(INTERTRIGGERTIME_HEAD, INTERTRIGGERTIME_TEXT);
           break;
       }
+    }
+
+    showToast(msg: string) {
+      let toast = this.toastCtrl.create({
+        message: msg,
+        duration: 2000,
+        position: 'middle'
+      });
+      toast.present();
     }
 
     // To alert messages on the screen
