@@ -5,7 +5,7 @@
     </button>
     <ion-title>Setup - Configure Sense</ion-title>
     <ion-buttons end>
-        <button ion-button (click)="scan()">
+        <button ion-button (click)="scan(true)">
           Scan
         </button>
       </ion-buttons>
@@ -16,8 +16,7 @@
   <ion-list> 
     <button ion-item *ngFor="let device of devices" (click)="deviceSelected(device)">
       <h2>{{ device.name }}</h2>
-      <p>{{ device.id }}</p>
-      <p>RSSI: {{ device.rssi }}</p>
+      <p>Signal: {{ device.rssi }}</p>
     </button>  
   </ion-list>
 </ion-content>
