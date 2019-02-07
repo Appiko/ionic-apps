@@ -94,7 +94,7 @@
     </ion-list>  
 	<ion-item *ngIf="timerShowTwilight">
       <ion-label>Include twilight</ion-label>
-      <ion-checkbox [(ngModel)]="timerDNTwilight" disabled="false" color="primary" item-end></ion-checkbox>
+      <ion-checkbox [(ngModel)]="timerDNTwilight" disabled="false" color="primary" item-end (click)="timerShowTwilightClick($event)"></ion-checkbox>
     </ion-item>
   </ion-card>
   <ion-card *ngIf="radioClickedTriggerTimer">  
@@ -134,7 +134,6 @@
 
       <ion-item *ngIf="radioTimerClickedBulb" >
         <ion-label color="primary" >Long press time (s)
-          <ion-badge color="primary" item-end>{{this.timerBulbExposureTime}}</ion-badge>
         </ion-label>
         <ion-input type="number" [(ngModel)]="timerBulbExposureTime" ng-init="timerBulbExposureTime=0" (ionChange)="setTimerBulbExposureTime($event)" placeholder="seconds"></ion-input>
       </ion-item>
@@ -147,13 +146,11 @@
 
       <ion-item *ngIf="radioTimerClickedVideo&&(make!=1)">
         <ion-label color="primary" >Duration of the video (s)
-          <ion-badge color="primary" item-end>{{this.timerVideoDuration}}</ion-badge>
         </ion-label>
         <ion-input type="number" [(ngModel)]="timerVideoDuration" ng-init="timerVideoDuration=0" (ionChange)="setTimerVideoDuration($event)" placeholder="seconds"></ion-input>
       </ion-item>     
       <ion-item *ngIf="radioTimerClickedVideo" >
         <ion-label color="primary" >Extension time (s)
-          <ion-badge color="primary" item-end>{{this.timerVideoExtension}}</ion-badge>
         </ion-label>
         <ion-input type="number" [(ngModel)]="timerVideoExtension" ng-init="timerVideoExtension=0" (ionChange)="setTimerVideoExtension($event)" placeholder="seconds"></ion-input>
       </ion-item>
@@ -192,7 +189,7 @@
     </ion-list>  
 	<ion-item *ngIf="pirShowTwilight">
       <ion-label>Include twilight</ion-label>
-      <ion-checkbox [(ngModel)]="pirDNTwilight" disabled="false" color="primary" item-end></ion-checkbox>
+      <ion-checkbox [(ngModel)]="pirDNTwilight" disabled="false" color="primary" item-end (click)="pirShowTwilightClick($event)"></ion-checkbox>
     </ion-item>
   </ion-card>
 
@@ -222,7 +219,6 @@
       </ion-item>
       <ion-item *ngIf="radioPirClickedBurst" >
         <ion-label color="primary">Time between shots (s)
-          <ion-badge color="primary" item-end>{{this.pirBurstGap}}</ion-badge>
         </ion-label>
         <ion-input type="number" [(ngModel)]="pirBurstGap" ng-init="pirBurstGap=0" (ionChange)="setPirBurstGap($event)" placeholder="seconds"></ion-input>
       </ion-item>
@@ -235,7 +231,6 @@
 
       <ion-item *ngIf="radioPirClickedBulb" >
         <ion-label color="primary" >Long press time (s)
-          <ion-badge color="primary" item-end>{{this.pirBulbExposureTime}}</ion-badge>
         </ion-label>
         <ion-input type="number" [(ngModel)]="pirBulbExposureTime" ng-init="pirBulbExposureTime=0" (ionChange)="setPirBulbExposureTime($event)" value="" placeholder="seconds"></ion-input>
       </ion-item>
@@ -248,14 +243,12 @@
       
       <ion-item *ngIf="radioPirClickedVideo&&(make!=1)">
         <ion-label color="primary" >Duration of the video (s)
-          <ion-badge color="primary" item-end>{{this.pirVideoDuration}}</ion-badge>
         </ion-label>
         <ion-input type="number" [(ngModel)]="pirVideoDuration" ng-init="pirVideoDuration=0" (ionChange)="setPirVideoDuration($event)" placeholder="seconds"></ion-input>
       </ion-item>
       
       <ion-item *ngIf="radioPirClickedVideo" >
         <ion-label color="primary" >Extension time (s)
-          <ion-badge color="primary" item-end>{{this.pirVideoExtension}}</ion-badge>
         </ion-label>
         <ion-input type="number" [(ngModel)]="pirVideoExtension" ng-init="pirVideoExtension=0" (ionChange)="setPirVideoExtension($event)" placeholder="seconds"></ion-input>
       </ion-item>
