@@ -314,7 +314,7 @@ export class DetailPage {
       ).catch(
          (e) => console.log("Error trying to read data from service " + UUID_SENSE_PI_SERVICE + " and char " + UUID_SENSE_PI_USER_SETTINGS + " : " + e)
       );
-
+/*
        setTimeout(() => {
         let data = this.constructArrayBufferToWrite();
         console.log('Uninitiated writeback of existing settings of len' + data.byteLength);
@@ -333,7 +333,15 @@ export class DetailPage {
           e => console.log('error in writing to device : ' + e),
         );
       }, 3000);
-      
+      */
+    }
+
+    timerShowTwilightClick(event) {
+      this.cd.detectChanges();
+    }
+
+    pirShowTwilightClick(event) {
+      this.cd.detectChanges();
     }
   
     // TIMER Settings
