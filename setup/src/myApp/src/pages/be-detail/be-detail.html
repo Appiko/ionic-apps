@@ -5,9 +5,47 @@
   Ionic pages and navigation.
 -->
 <ion-header>
-  <ion-navbar>
+  <ion-navbar color="appiko">
     <ion-title>be_detail</ion-title>
   </ion-navbar>
 </ion-header>
 
-<ion-content padding> </ion-content>
+<ion-content>
+  <ion-card>
+    <ion-card-header style="display: flex;align-items:center">
+      <button
+        ion-button
+        color="primary"
+        clear
+        icon-only
+        small
+        round
+        class="helper-btn"
+        (click)="help.show('Trigger Mode')"
+      >
+        <ion-icon name="help-circle"></ion-icon>
+      </button>
+      <ion-card-title>Trigger Mode</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list radio-group [(ngModel)]="triggerMode">
+        <ion-item>
+          <ion-label>Motion</ion-label>
+          <ion-radio slot="end" value="0"></ion-radio>
+        </ion-item>
+        <ion-item>
+          <ion-label>Timer</ion-label>
+          <ion-radio slot="end" value="1"></ion-radio>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-title style="text-align: center; color: black;" padding>
+    {{ triggerMode == 0 ? "Motion Setting" : "Timer Settings" }}</ion-title
+  >
+
+  <be-motion *ngIf="triggerMode == 0"></be-motion>
+  <be-timer *ngIf="triggerMode == 1"></be-timer>
+  <ir-tx></ir-tx>
+</ion-content>

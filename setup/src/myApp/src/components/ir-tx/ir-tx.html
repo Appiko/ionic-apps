@@ -1,0 +1,59 @@
+<!-- Generated template for the CamTriggerCardComponent component -->
+<ion-card>
+  <ion-card-header style="display: flex;align-items:center">
+    <button
+      ion-button
+      color="primary"
+      clear
+      icon-only
+      small
+      round
+      class="helper-btn"
+      (click)="help.show('Trigger Mode')"
+    >
+      <ion-icon name="help-circle"></ion-icon>
+    </button>
+    <ion-card-title style="flex: 1">
+      IR TX
+    </ion-card-title>
+    <ion-toggle checked="true" [(ngModel)]="enable"></ion-toggle>
+  </ion-card-header>
+  <ion-card-content *ngIf="enable">
+    <ion-title>Speed Selection</ion-title>
+    <ion-list radio-group>
+      <ion-item>
+        <ion-label>Lightning Fast</ion-label>
+        <ion-radio checked slot="end"></ion-radio>
+      </ion-item>
+      <ion-item>
+        <ion-label>Fast</ion-label>
+        <ion-radio slot="end"></ion-radio>
+      </ion-item>
+      <ion-item>
+        <ion-label>Medium</ion-label>
+        <ion-radio slot="end"></ion-radio>
+      </ion-item>
+      <ion-item>
+        <ion-label>Slow</ion-label>
+        <ion-radio slot="end"></ion-radio>
+      </ion-item>
+    </ion-list>
+
+    <ion-title>DistanceSelection</ion-title>
+
+    <ion-list radio-group>
+      <ion-item>
+        <ion-label>Short</ion-label>
+        <ion-radio checked slot="end"></ion-radio>
+      </ion-item>
+      <ion-item>
+        <ion-label>Medium</ion-label>
+        <ion-radio slot="end"></ion-radio>
+      </ion-item>
+      <ion-item>
+        <ion-label>Far</ion-label>
+        <ion-radio slot="end"></ion-radio>
+      </ion-item>
+    </ion-list>
+  </ion-card-content>
+</ion-card>

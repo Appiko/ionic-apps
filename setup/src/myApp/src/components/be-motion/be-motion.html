@@ -1,0 +1,39 @@
+<div>
+  <ion-card>
+    <ion-card-header style="display: flex;align-items:center">
+      <button
+        ion-button
+        color="primary"
+        clear
+        icon-only
+        small
+        round
+        class="helper-btn"
+        (click)="help.show('Trigger Mode')"
+      >
+        <ion-icon name="help-circle"></ion-icon>
+      </button>
+      <ion-card-title>Sensitivity</ion-card-title>
+      <ion-badge color="primary" style="margin-left:5px">{{
+        sensitivityOnRange
+      }}</ion-badge>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-range
+        [(ngModel)]="sensitivityOnRange"
+        min="1"
+        max="4"
+        step="1"
+        pin="true"
+        color="appiko"
+        (ionChange)="setSensitivity($event)"
+      >
+        <ion-label range-left>MIN</ion-label>
+        <ion-label range-right>MAX</ion-label>
+      </ion-range>
+    </ion-card-content>
+  </ion-card>
+</div>
+
+<trigger-frequency [(time)]="time" label="Time Interval"></trigger-frequency>
+<cam-trigger-card></cam-trigger-card>

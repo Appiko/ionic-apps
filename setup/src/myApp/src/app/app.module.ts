@@ -14,34 +14,42 @@ import { TestConfigPage } from "../pages/test-config/test-config";
 import { StatusBar } from "@ionic-native/status-bar";
 import { SplashScreen } from "@ionic-native/splash-screen";
 import { BeDetailPage } from "../pages/be-detail/be-detail";
+import { ComponentsModule } from "../components/components.module";
+import { HelpModalProvider } from '../providers/help-modal/help-modal';
 
 @NgModule({
-  declarations: [
-    MyApp,
-    HomePage,
-    DetailPage,
-    BeDetailPage,
-    AboutPage,
-    HelpPage,
-    TestConfigPage
-  ],
-  imports: [BrowserModule, IonicModule.forRoot(MyApp)],
-  bootstrap: [IonicApp],
-  entryComponents: [
-    MyApp,
-    HomePage,
-    DetailPage,
-    BeDetailPage,
-    AboutPage,
-    HelpPage,
-    TestConfigPage
-  ],
-  providers: [
-    StatusBar,
-    SplashScreen,
-    { provide: ErrorHandler, useClass: IonicErrorHandler },
-    NativeStorage,
-    BLE
-  ]
+	declarations: [
+		MyApp,
+		HomePage,
+		DetailPage,
+		BeDetailPage,
+		AboutPage,
+		HelpPage,
+		TestConfigPage,
+
+	],
+	imports: [
+		BrowserModule,
+		ComponentsModule,
+		IonicModule.forRoot(MyApp),
+	],
+	bootstrap: [IonicApp],
+	entryComponents: [
+		MyApp,
+		HomePage,
+		DetailPage,
+		BeDetailPage,
+		AboutPage,
+		HelpPage,
+		TestConfigPage,
+	],
+	providers: [
+		StatusBar,
+		SplashScreen,
+		{ provide: ErrorHandler, useClass: IonicErrorHandler },
+		NativeStorage,
+		BLE,
+    HelpModalProvider
+	]
 })
-export class AppModule {}
+export class AppModule { }

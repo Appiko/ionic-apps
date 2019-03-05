@@ -1,0 +1,47 @@
+<div [formGroup]="triggerForm">
+  <ion-card>
+    <ion-card-header style="display: flex;align-items:center">
+      <button
+        ion-button
+        color="primary"
+        clear
+        icon-only
+        small
+        round
+        class="helper-btn"
+        (click)="help.show('Trigger Mode')"
+      >
+        <ion-icon name="help-circle"></ion-icon>
+      </button>
+      <ion-card-title>{{ label }}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item>
+        <ion-label fixed>Interval(s)</ion-label>
+        <ion-input
+          type="number"
+          placeholder="seconds"
+          formControlName="validateFrequency"
+          [value]="time"
+          (ionChange)="change($event?.value)"
+        >
+        </ion-input>
+      </ion-item>
+      <div
+        *ngFor="let validation of errorMessages.frequency"
+        padding-horizontal
+      >
+        <div
+          style="color: red"
+          *ngIf="
+            triggerForm.get('validateFrequency').hasError(validation.type) &&
+            (triggerForm.get('validateFrequency').dirty ||
+              triggerForm.get('validateFrequency').touched)
+          "
+        >
+          {{ validation.message }}
+        </div>
+      </div>
+    </ion-card-content>
+  </ion-card>
+</div>
