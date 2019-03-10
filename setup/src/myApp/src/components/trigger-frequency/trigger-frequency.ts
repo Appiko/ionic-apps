@@ -38,8 +38,12 @@ export class TriggerFrequencyComponent {
     frequency: [
       { type: "required", message: "This field is required" },
       {
-        type: "pattern",
-        message: "Please enter positive value below 1000"
+        type: "min",
+        message: "Please enter positive value less than 600"
+      },
+      {
+        type: "max",
+        message: "Please enter a value less than 600"
       }
     ]
   };
@@ -49,7 +53,8 @@ export class TriggerFrequencyComponent {
       "",
       Validators.compose([
         Validators.required,
-        Validators.pattern("([0-9]{1,3})([.][0-9]*)")
+        Validators.min(0),
+        Validators.max(600)
       ])
     )
   });

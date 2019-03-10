@@ -1,5 +1,6 @@
-import { Component } from "@angular/core";
+import { Component, Output, EventEmitter, Input } from "@angular/core";
 import { HelpModalProvider } from "../../providers/help-modal/help-modal";
+import { BeConfig } from "../../providers/BeConfig";
 
 /**
  * Generated class for the BeMotionComponent component.
@@ -12,18 +13,30 @@ import { HelpModalProvider } from "../../providers/help-modal/help-modal";
   templateUrl: "be-motion.html"
 })
 export class BeMotionComponent {
-  sensitivity: number = 100;
   sensitivityOnRange: number;
-  time = 3.2;
   sensitivityMap = [100, 250, 500, 1000];
-  constructor(public help: HelpModalProvider) {
-    console.log("Hello BeMotionComponent Component");
-    this.setSensitivity(this.sensitivity);
+
+  motionConfigVal: BeConfig["motion"];
+
+  @Output() motionConfigChange = new EventEmitter();
+
+  @Input()
+  get motionConfig() {
+    return this.motionConfigVal;
   }
 
+  set motionConfig(val) {
+    this.motionConfigVal = val;
+    this.setSensitivity(this.motionConfigVal.motionSensitivity);
+    this.motionConfigChange.emit(this.motionConfigVal);
+  }
+
+  constructor(public help: HelpModalProvider) {}
+
+  // sends an object on ionChange
   setSensitivity(e: object | number) {
     if (typeof e === "object") {
-      this.sensitivity = this.sensitivityMap[e["value"] - 1];
+      this.motionConfig.motionSensitivity = this.sensitivityMap[e["value"] - 1];
     } else if (typeof e === "number") {
       this.sensitivityOnRange = this.sensitivityMap.indexOf(e) + 1;
     }

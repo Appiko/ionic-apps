@@ -1,5 +1,6 @@
-import { Component } from "@angular/core";
+import { Component, Output, EventEmitter, Input } from "@angular/core";
 import { HelpModalProvider } from "../../providers/help-modal/help-modal";
+import { BeConfig } from "../../providers/BeConfig";
 
 /**
  * Generated class for the IrTxComponent component.
@@ -12,10 +13,21 @@ import { HelpModalProvider } from "../../providers/help-modal/help-modal";
   templateUrl: "ir-tx.html"
 })
 export class IrTxComponent {
-  enable: boolean;
+  irConfigVal: BeConfig["ir"];
+
+  @Output() irConfigChange = new EventEmitter();
+
+  @Input()
+  get irConfig() {
+    return this.irConfigVal;
+  }
+
+  set irConfig(val) {
+    this.irConfigVal = val;
+    this.irConfigChange.emit(this.irConfigVal);
+  }
 
   constructor(public help: HelpModalProvider) {
     console.log("Hello IrTxComponent Component");
-    this.enable = false;
   }
 }

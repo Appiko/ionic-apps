@@ -7,7 +7,7 @@ import { HomePage } from "../pages/home/home";
 import { AboutPage } from "../pages/about/about";
 import { HelpPage } from "../pages/help/help";
 import { TestConfigPage } from "../pages/test-config/test-config";
-import { BeDetailPage } from "../pages/be-detail/be-detail";
+import { BleServiceProvider } from "../providers/ble-service/ble-service";
 
 @Component({
   templateUrl: "app.html"
@@ -15,13 +15,14 @@ import { BeDetailPage } from "../pages/be-detail/be-detail";
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
 
-  rootPage: any = BeDetailPage;
+  rootPage: any = HomePage;
 
   pages: Array<{ title: string; component: any }>;
 
   constructor(
     public platform: Platform,
     public app: App,
+    public bleService: BleServiceProvider,
     public statusBar: StatusBar,
     public splashScreen: SplashScreen
   ) {

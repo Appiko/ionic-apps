@@ -280,7 +280,9 @@ export class HomePage {
         device: device
       });
     } else if (device.name.includes(APPIKO_SENSE_BE)) {
-      this.navCtrl.push(BeDetailPage);
+      this.navCtrl.push(BeDetailPage, {
+        device: device
+      });
     }
   }
 
