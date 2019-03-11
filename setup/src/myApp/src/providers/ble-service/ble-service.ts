@@ -32,8 +32,8 @@ export class BleServiceProvider {
   MotionTriggerTimeOffset = 8; // 16bits
 
   /* Timer Offsets */
-  TimerOperationTimeOffset = 10; // use 01 //TODO:
-  TimerTimeIntervalOffset = 11; // 16bits
+  TimerTimeIntervalOffset = 10; // 16bits
+  TimerOperationTimeOffset = 12; // use 01 //TODO:  
   TimerPreFocusAndModeOffset = 13; // PreFocus- (1 bit) ; Mode (7bits) [0-4]
   TimerParamOneOffset = 14; // 16 bits
   TimerParamTwoOffset = 16; // 8 bits
@@ -230,13 +230,13 @@ export class BleServiceProvider {
     );
     dataview.setUint16(
       this.MotionTriggerTimeOffset,
-      config.motion.motionTriggerTime,
+      10*config.motion.motionTriggerTime,
       true
     );
     dataview.setUint8(this.TimerOperationTimeOffset, 1);
     dataview.setUint16(
       this.TimerTimeIntervalOffset,
-      config.timer.timerTimeInterval,
+      10*config.timer.timerTimeInterval,
       true
     );
     dataview.setUint8(
