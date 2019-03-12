@@ -3,7 +3,8 @@ import {
   NavController,
   NavParams,
   LoadingController,
-  AlertController
+  AlertController,
+  ToastController
 } from "ionic-angular";
 import { HelpModalProvider } from "../../providers/help-modal/help-modal";
 import { BLE } from "@ionic-native/ble";
@@ -34,6 +35,7 @@ export class BeDetailPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     private ble: BLE,
+    public toastCtrl: ToastController,
     public alertCtrl: AlertController,
     private bleService: BleServiceProvider,
     public loadingCtrl: LoadingController,
@@ -130,10 +132,15 @@ export class BeDetailPage {
   }
 
   onButtonClickClose() {
-    this.showAlert(
-      "DONE",
-      "Red light will blink on detecting motion for 10 minutes"
-    );
+    if (this.triggerMode == 1) {
+      this.toastCtrl
+        .create({
+          message: "Red light will blink on detecting motion for 10 minutes",
+          duration: 2000,
+          position: "middle"
+        })
+        .present();
+    }
     this.navCtrl.pop();
   }
 }
