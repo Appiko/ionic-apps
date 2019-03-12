@@ -148,11 +148,6 @@
         <ion-label color="primary" >Duration of the video (s)
         </ion-label>
         <ion-input type="number" [(ngModel)]="timerVideoDuration" ng-init="timerVideoDuration=0" (ionChange)="setTimerVideoDuration($event)" placeholder="seconds"></ion-input>
-      </ion-item>     
-      <ion-item *ngIf="radioTimerClickedVideo" >
-        <ion-label color="primary" >Extension time (s)
-        </ion-label>
-        <ion-input type="number" [(ngModel)]="timerVideoExtension" ng-init="timerVideoExtension=0" (ionChange)="setTimerVideoExtension($event)" placeholder="seconds"></ion-input>
       </ion-item>
 
       <ion-item>
