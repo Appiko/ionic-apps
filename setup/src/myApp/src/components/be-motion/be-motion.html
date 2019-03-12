@@ -4,7 +4,7 @@
       <button
         color="primary"
         class="helper-btn"
-        (click)="help.show('Trigger Mode')"
+        (click)="help.show('Sensitivity')"
         ion-button
         clear
         icon-only
@@ -40,6 +40,7 @@
 <trigger-frequency
   [(time)]="motionConfig.motionTriggerTime"
   label="Inter trigger timer"
+  helpObjectName="Inter Trigger Time"
 >
 </trigger-frequency>
 <cam-trigger-card

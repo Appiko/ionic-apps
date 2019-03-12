@@ -12,11 +12,44 @@ export class HelpModalProvider {
   // TODO: Add different elements
   element = {
     "Trigger Mode": {
-      message: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-		Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-		Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-		Excepteur sint occaecat cupidatat non proident,
-		sunt in culpa qui officia deserunt mollit anim id est laborum.`
+      message: `This setting configures the source for the camera trigger.
+			Choose 'Motion' to trigger the camera on detection of animal motion.
+			Choose 'Timer' to trigger the camera periodically after a specified amount of time.
+			Please write to us if you need both simultaneously.`
+    },
+    "Timer Interval": {
+      message:
+        "Enter the time in seconds after which the camera should trigger repeatedly"
+    },
+    "Inter Trigger Time": {
+      message: `This setting specifies the amount of time the motion sensor should be switched off after motion detection.`
+    },
+    "Camera Operations (Motion)": {
+      message: `This setting configures how the camera is triggered.
+			In 'Single Shot' the shutter button activated once, usually to take a single image.
+			In 'Multi-Shot' the shutter button is activated two or more times at an interval specified.
+			In 'Long Press' the shutter button is held for the duration specified.
+			In 'Video Mode' the shutter button is activated two times at the interval specified.
+			In case motion is detected at the end of the video interval the end shutter button press can be delayed by the extension duration for three times.
+			In 'Half Press (Focus)' the half press of the shutter button is done which usually focuses the camera.
+			Note that based on the settings on the camera different outcomes can be achieved for each mode.`
+    },
+    "Camera Operations (Timer)": {
+      message: `This setting configures how the camera is triggered.
+			In 'Single Shot' the shutter button activated once, usually to take a single image.
+			In 'Multi-Shot' the shutter button is activated two or more times at an interval specified.
+			In 'Long Press' the shutter button is held for the duration specified.
+			In 'Video Mode' the shutter button is activated two times at the interval specified.
+			In 'Half Press (Focus)' the half press of the shutter button is done which usually focuses the camera.
+			Note that based on the settings on the camera different outcomes can be achieved for each mode.`
+    },
+    "IR Transmission": {
+      message: `This controls the infrared beam transmission.
+			Switch it off to make the device
+			a receiver only and not provide an IR beam to another device.`
+    },
+    Sensitivity: {
+      message: `This setting controls how quickly the sensor reacts to movements.`
     }
   };
 

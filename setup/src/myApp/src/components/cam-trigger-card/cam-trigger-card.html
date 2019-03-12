@@ -9,7 +9,13 @@
         small
         round
         class="helper-btn"
-        (click)="help.show('Trigger Mode')"
+        (click)="
+          help.show(
+            triggerMode == 1
+              ? 'Camera Operations (Motion)'
+              : 'Camera Operations (Timer)'
+          )
+        "
       >
         <ion-icon name="help-circle"></ion-icon>
       </button>

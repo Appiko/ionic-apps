@@ -14,6 +14,7 @@ import { HelpModalProvider } from "../../providers/help-modal/help-modal";
 })
 export class TriggerFrequencyComponent {
   @Input() label = "";
+  @Input() helpObjectName: string;
   @Output() timeChange = new EventEmitter();
   timeVal = 0;
 

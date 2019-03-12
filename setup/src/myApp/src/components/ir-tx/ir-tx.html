@@ -1,21 +1,21 @@
 <!-- Generated template for the CamTriggerCardComponent component -->
 <ion-card *ngIf="irConfig">
-    <ion-card-header style="display: flex;align-items:center">
-        <button
-            ion-button
-            color="primary"
-            clear
-            icon-only
-            small
-            round
-            class="helper-btn"
-            (click)="help.show('Trigger Mode')"
-        >
-            <ion-icon name="help-circle"></ion-icon>
-        </button>
-        <ion-card-title style="flex: 1">IR TX</ion-card-title>
-        <ion-toggle [(ngModel)]="irConfig.IRTxEnabled"></ion-toggle>
-        <!-- <ion-label>Lightning Fast</ion-label>
+  <ion-card-header style="display: flex;align-items:center">
+    <button
+      ion-button
+      color="primary"
+      clear
+      icon-only
+      small
+      round
+      class="helper-btn"
+      (click)="help.show('IR Transmission')"
+    >
+      <ion-icon name="help-circle"></ion-icon>
+    </button>
+    <ion-card-title style="flex: 1">IR Transmission</ion-card-title>
+    <ion-toggle [(ngModel)]="irConfig.IRTxEnabled"></ion-toggle>
+    <!-- <ion-label>Lightning Fast</ion-label>
         <ion-radio checked slot="end"></ion-radio>
       </ion-item>
       <ion-item>
@@ -49,5 +49,5 @@
       </ion-item>
     </ion-list>
   </ion-card-content> -->
-    </ion-card-header>
+  </ion-card-header>
 </ion-card>
