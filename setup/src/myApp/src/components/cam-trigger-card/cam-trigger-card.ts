@@ -8,7 +8,6 @@ import { CamConfig } from "../../providers/BeConfig";
  *
  * See https://angular.io/api/core/Component for more info on Angular
  * Components.
-TODO: Add Databinding and other form validation
  */
 
 @Component({
@@ -28,6 +27,8 @@ export class CamTriggerCardComponent {
     this.camConfigVal = val;
     this.camConfigChange.emit(this.camConfigVal);
   }
+
+  @Input() triggerMode: number;
 
   constructor(public help: HelpModalProvider) {
     console.log("Hello CamTriggerCardComponent Component");

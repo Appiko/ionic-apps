@@ -1,6 +1,9 @@
 <trigger-frequency
-    [(time)]="timerConfig.timerTimeInterval"
-    label="Trigger Frequency"
+  [(time)]="timerConfig.timerTimeInterval"
+  label="Trigger Frequency"
 >
 </trigger-frequency>
-<cam-trigger-card [(camConfig)]="timerConfig.camConfig"></cam-trigger-card>
+<cam-trigger-card
+  [(camConfig)]="timerConfig.camConfig"
+  [triggerMode]="0"
+></cam-trigger-card>
