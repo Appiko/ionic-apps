@@ -134,14 +134,14 @@ export class BleServiceProvider {
         motionTriggerTime: dataview.getUint16(
           this.MotionTriggerTimeOffset,
           true
-        )
+        )/10
       },
       timer: {
         timeOperationTime: dataview.getUint8(this.TimerOperationTimeOffset),
         timerTimeInterval: dataview.getUint16(
           this.TimerTimeIntervalOffset,
           true
-        ),
+        )/10,
         camConfig: {
           preFocus: dataview.getUint8(this.TimerPreFocusAndModeOffset) & 0x1,
           mode: timerMode,
