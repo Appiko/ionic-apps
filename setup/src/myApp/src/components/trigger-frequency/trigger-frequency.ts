@@ -40,11 +40,11 @@ export class TriggerFrequencyComponent {
       { type: "required", message: "This field is required" },
       {
         type: "min",
-        message: "Please enter positive value less than 600"
+        message: "Timer interval cannot be less than 0.5 s"
       },
       {
         type: "max",
-        message: "Please enter a value less than 600"
+        message: "The maximum timer interval is an hour"
       }
     ]
   };
@@ -54,8 +54,8 @@ export class TriggerFrequencyComponent {
       "",
       Validators.compose([
         Validators.required,
-        Validators.min(0),
-        Validators.max(600)
+        Validators.min(0.5),
+        Validators.max(3600)
       ])
     )
   });
