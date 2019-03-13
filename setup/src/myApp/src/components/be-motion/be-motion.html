@@ -1,48 +1,49 @@
 <div *ngIf="motionConfig">
-    <ion-card>
-        <ion-card-header style="display: flex;align-items:center">
-            <button
-                color="primary"
-                class="helper-btn"
-                (click)="help.show('Trigger Mode')"
-                ion-button
-                clear
-                icon-only
-                small
-                round
-            >
-                <ion-icon name="help-circle"></ion-icon>
-            </button>
+  <ion-card>
+    <ion-card-header style="display: flex;align-items:center">
+      <button
+        color="primary"
+        class="helper-btn"
+        (click)="help.show('Sensitivity')"
+        ion-button
+        clear
+        icon-only
+        small
+        round
+      >
+        <ion-icon name="help-circle"></ion-icon>
+      </button>
 
-            <ion-card-title>Sensitivity</ion-card-title>
+      <ion-card-title>Sensitivity</ion-card-title>
 
-            <ion-badge
-                color="primary"
-                style="margin-left:5px"
-            >
-                {{ sensitivityOnRange }}
-            </ion-badge>
-        </ion-card-header>
+      <ion-badge color="primary" style="margin-left:5px">
+        {{ sensitivityOnRange }}
+      </ion-badge>
+    </ion-card-header>
 
-        <ion-card-content>
-            <ion-range
-                [(ngModel)]="sensitivityOnRange"
-                min="1"
-                max="4"
-                step="1"
-                pin="true"
-                (ionChange)="setSensitivity($event)"
-            >
-                <ion-label range-left>MIN</ion-label>
-                <ion-label range-right>MAX</ion-label>
-            </ion-range>
-        </ion-card-content>
-    </ion-card>
+    <ion-card-content>
+      <ion-range
+        [(ngModel)]="sensitivityOnRange"
+        min="1"
+        max="4"
+        step="1"
+        pin="true"
+        (ionChange)="setSensitivity($event)"
+      >
+        <ion-label range-left>MIN</ion-label>
+        <ion-label range-right>MAX</ion-label>
+      </ion-range>
+    </ion-card-content>
+  </ion-card>
 </div>
 
 <trigger-frequency
-    [(time)]="motionConfig.motionTriggerTime"
-    label="Inter trigger timer"
+  [(time)]="motionConfig.motionTriggerTime"
+  label="Inter trigger timer"
+  helpObjectName="Inter Trigger Time"
 >
 </trigger-frequency>
-<cam-trigger-card [(camConfig)]="motionConfig.camConfig"></cam-trigger-card>
+<cam-trigger-card
+  [(camConfig)]="motionConfig.camConfig"
+  [triggerMode]="1"
+></cam-trigger-card>

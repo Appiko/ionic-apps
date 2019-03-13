@@ -1,234 +1,194 @@
 <div>
-    <ion-card>
-        <ion-card-header style="display: flex;align-items:center">
-            <button
-                ion-button
-                color="primary"
-                clear
-                icon-only
-                small
-                round
-                class="helper-btn"
-                (click)="help.show('Trigger Mode')"
-            >
-                <ion-icon name="help-circle"></ion-icon>
-            </button>
-            <ion-card-title>Camera Operation</ion-card-title>
-        </ion-card-header>
+  <ion-card>
+    <ion-card-header style="display: flex;align-items:center">
+      <button
+        ion-button
+        color="primary"
+        clear
+        icon-only
+        small
+        round
+        class="helper-btn"
+        (click)="
+          help.show(
+            triggerMode == 1
+              ? 'Camera Operations (Motion)'
+              : 'Camera Operations (Timer)'
+          )
+        "
+      >
+        <ion-icon name="help-circle"></ion-icon>
+      </button>
+      <ion-card-title>Camera Operation</ion-card-title>
+    </ion-card-header>
 
-        <ion-card-content>
-            <ion-item style="border-bottom: 1px solid lightgray; margin-bottom: 4px;">
-                <ion-label>Pre-Focus</ion-label>
-                <ion-icon
-                    name="expand"
-                    item-start
-                ></ion-icon>
-                <ion-toggle [(ngModel)]="camConfig.preFocus"></ion-toggle>
-            </ion-item>
+    <ion-card-content>
+      <ion-item style="border-bottom: 1px solid lightgray; margin-bottom: 4px;">
+        <ion-label>Pre-Focus</ion-label>
+        <ion-icon name="expand" item-start></ion-icon>
+        <ion-toggle [(ngModel)]="camConfig.preFocus"></ion-toggle>
+      </ion-item>
 
-            <ion-list
-                radio-group
-                [(ngModel)]="camConfig.mode"
+      <ion-list radio-group [(ngModel)]="camConfig.mode">
+        <ion-item>
+          <ion-icon name="image" item-start></ion-icon>
+          <ion-label>Single Shot</ion-label>
+          <ion-radio checked slot="end" value="0"></ion-radio>
+        </ion-item>
+        <ion-item>
+          <ion-label>Multi Shot</ion-label>
+          <ion-icon name="images" item-start></ion-icon>
+          <ion-radio slot="end" value="1"></ion-radio>
+        </ion-item>
+        <ion-list *ngIf="camConfig.mode == 1" [formGroup]="multiShotForm">
+          <ion-item>
+            <ion-label color="primary">Number of shots per trigger</ion-label>
+            <ion-input
+              type="number"
+              placeholder="2"
+              [(ngModel)]="camConfig.paramOne"
+              formControlName="validateNumberOfShots"
             >
-                <ion-item>
-                    <ion-icon
-                        name="image"
-                        item-start
-                    ></ion-icon>
-                    <ion-label>Single Shot</ion-label>
-                    <ion-radio
-                        checked
-                        slot="end"
-                        value="0"
-                    ></ion-radio>
-                </ion-item>
-                <ion-item>
-                    <ion-label>Multi Shot</ion-label>
-                    <ion-icon
-                        name="images"
-                        item-start
-                    ></ion-icon>
-                    <ion-radio
-                        slot="end"
-                        value="1"
-                    ></ion-radio>
-                </ion-item>
-                <ion-list
-                    *ngIf="camConfig.mode == 1"
-                    [formGroup]="multiShotForm"
-                >
-                    <ion-item>
-                        <ion-label color="primary">Number of shots per trigger</ion-label>
-                        <ion-input
-                            type="number"
-                            placeholder="2"
-                            [(ngModel)]="camConfig.paramOne"
-                            formControlName="validateNumberOfShots"
-                        >
-                        </ion-input>
-                    </ion-item>
-                    <div
-                        *ngFor="let validation of errorMessages.numerOfShots"
-                        padding-horizontal
-                    >
-                        <div
-                            style="color: red"
-                            *ngIf="
+            </ion-input>
+          </ion-item>
+          <div
+            *ngFor="let validation of errorMessages.numerOfShots"
+            padding-horizontal
+          >
+            <div
+              style="color: red"
+              *ngIf="
                 multiShotForm
                   .get('validateNumberOfShots')
                   .hasError(validation.type) &&
                 (multiShotForm.get('validateNumberOfShots').dirty ||
                   multiShotForm.get('validateNumberOfShots').touched)
               "
-                        >
-                            {{ validation.message }}
-                        </div>
-                    </div>
+            >
+              {{ validation.message }}
+            </div>
+          </div>
 
-                    <ion-item>
-                        <ion-label color="primary">Time between shots (s)</ion-label>
-                        <ion-input
-                            type="number"
-                            placeholder="seconds"
-                            formControlName="validateTimeBetweenShots"
-                            [(ngModel)]="camConfig.paramTwo"
-                        ></ion-input>
-                    </ion-item>
-                    <div
-                        *ngFor="let validation of errorMessages.timeBetweenShots"
-                        padding-horizontal
-                    >
-                        <div
-                            style="color: red"
-                            *ngIf="
-															multiShotForm
-																.get('validateTimeBetweenShots')
-																.hasError(validation.type) &&
-															(multiShotForm.get('validateTimeBetweenShots').dirty ||
-																multiShotForm.get('validateTimeBetweenShots').touched)
-														"
-                        >
-                            {{ validation.message }}
-                        </div>
-                    </div>
-                </ion-list>
-                <ion-item>
-                    <ion-label>Long press</ion-label>
-                    <ion-icon
-                        name="bulb"
-                        item-start
-                    ></ion-icon>
-                    <ion-radio
-                        slot="end"
-                        value="2"
-                    ></ion-radio>
-                </ion-item>
-                <ion-item
-                    *ngIf="camConfig.mode == 2"
-                    [formGroup]="longPressForm"
-                >
-                    <ion-label color="primary">Long press time (s)</ion-label>
-                    <ion-input
-                        type="number"
-                        placeholder="seconds"
-                        [(ngModel)]="camConfig.paramOne"
-                        formControlName="validateDuration"
-                    ></ion-input>
-                </ion-item>
-                <div
-                    *ngFor="let validation of errorMessages.longPressDuration"
-                    padding-horizontal
-                >
-                    <div
-                        style="color: red"
-                        *ngIf="
+          <ion-item>
+            <ion-label color="primary">Time between shots (s)</ion-label>
+            <ion-input
+              type="number"
+              placeholder="seconds"
+              formControlName="validateTimeBetweenShots"
+              [(ngModel)]="camConfig.paramTwo"
+            ></ion-input>
+          </ion-item>
+          <div
+            *ngFor="let validation of errorMessages.timeBetweenShots"
+            padding-horizontal
+          >
+            <div
+              style="color: red"
+              *ngIf="
+                multiShotForm
+                  .get('validateTimeBetweenShots')
+                  .hasError(validation.type) &&
+                (multiShotForm.get('validateTimeBetweenShots').dirty ||
+                  multiShotForm.get('validateTimeBetweenShots').touched)
+              "
+            >
+              {{ validation.message }}
+            </div>
+          </div>
+        </ion-list>
+        <ion-item>
+          <ion-label>Long press</ion-label>
+          <ion-icon name="bulb" item-start></ion-icon>
+          <ion-radio slot="end" value="2"></ion-radio>
+        </ion-item>
+        <ion-item *ngIf="camConfig.mode == 2" [formGroup]="longPressForm">
+          <ion-label color="primary">Long press time (s)</ion-label>
+          <ion-input
+            type="number"
+            placeholder="seconds"
+            [(ngModel)]="camConfig.paramOne"
+            formControlName="validateDuration"
+          ></ion-input>
+        </ion-item>
+        <div
+          *ngFor="let validation of errorMessages.longPressDuration"
+          padding-horizontal
+        >
+          <div
+            style="color: red"
+            *ngIf="
               longPressForm.get('validateDuration').hasError(validation.type) &&
               (longPressForm.get('validateDuration').dirty ||
                 longPressForm.get('validateDuration').touched)
             "
-                    >
-                        {{ validation.message }}
-                    </div>
-                </div>
-                <ion-item>
-                    <ion-label>Video</ion-label>
-                    <ion-icon
-                        name="videocam"
-                        item-start
-                    ></ion-icon>
-                    <ion-radio
-                        slot="end"
-                        value="3"
-                    ></ion-radio>
-                </ion-item>
-                <ion-list
-                    *ngIf="camConfig.mode == 3"
-                    [formGroup]="videoForm"
-                >
-                    <ion-item>
-                        <ion-label color="primary">Duration of the video (s)</ion-label>
-                        <ion-input
-                            type="number"
-                            [(ngModel)]="camConfig.paramOne"
-                            placeholder="seconds"
-                            formControlName="validateDuration"
-                        ></ion-input>
-                    </ion-item>
-                    <div
-                        *ngFor="let validation of errorMessages.videoDuration"
-                        padding-horizontal
-                    >
-                        <div
-                            style="color: red"
-                            *ngIf="
+          >
+            {{ validation.message }}
+          </div>
+        </div>
+        <ion-item>
+          <ion-label>Video</ion-label>
+          <ion-icon name="videocam" item-start></ion-icon>
+          <ion-radio slot="end" value="3"></ion-radio>
+        </ion-item>
+        <ion-list *ngIf="camConfig.mode == 3" [formGroup]="videoForm">
+          <ion-item>
+            <ion-label color="primary">Duration of the video (s)</ion-label>
+            <ion-input
+              type="number"
+              [(ngModel)]="camConfig.paramOne"
+              placeholder="seconds"
+              formControlName="validateDuration"
+            ></ion-input>
+          </ion-item>
+          <div
+            *ngFor="let validation of errorMessages.videoDuration"
+            padding-horizontal
+          >
+            <div
+              style="color: red"
+              *ngIf="
                 videoForm.get('validateDuration').hasError(validation.type) &&
                 (videoForm.get('validateDuration').dirty ||
                   videoForm.get('validateDuration').touched)
               "
-                        >
-                            {{ validation.message }}
-                        </div>
-                    </div>
+            >
+              {{ validation.message }}
+            </div>
+          </div>
 
-                    <ion-item>
-                        <ion-label color="primary">Extension time (s)</ion-label>
-                        <ion-input
-                            type="number"
-                            [(ngModel)]="camConfig.paramTwo"
-                            placeholder="seconds"
-                            formControlName="validateExtentionTime"
-                        ></ion-input>
-                    </ion-item>
-                    <div
-                        *ngFor="let validation of errorMessages.videoExtentionTime"
-                        padding-horizontal
-                    >
-                        <div
-                            style="color: red"
-                            *ngIf="
+          <ion-item *ngIf="triggerMode == 1">
+            <ion-label color="primary">Extension time (s)</ion-label>
+            <ion-input
+              type="number"
+              [(ngModel)]="camConfig.paramTwo"
+              placeholder="seconds"
+              formControlName="validateExtentionTime"
+            ></ion-input>
+          </ion-item>
+          <div
+            *ngFor="let validation of errorMessages.videoExtentionTime"
+            padding-horizontal
+          >
+            <div
+              style="color: red"
+              *ngIf="
                 videoForm
                   .get('validateExtentionTime')
                   .hasError(validation.type) &&
                 (videoForm.get('validateExtentionTime').dirty ||
                   videoForm.get('validateExtentionTime').touched)
               "
-                        >
-                            {{ validation.message }}
-                        </div>
-                    </div>
-                </ion-list>
-                <ion-item>
-                    <ion-label>Half Press</ion-label>
-                    <ion-icon
-                        name="aperture"
-                        item-start
-                    ></ion-icon>
-                    <ion-radio
-                        slot="end"
-                        value="4"
-                    ></ion-radio>
-                </ion-item>
-            </ion-list>
-        </ion-card-content>
-    </ion-card>
+            >
+              {{ validation.message }}
+            </div>
+          </div>
+        </ion-list>
+        <ion-item>
+          <ion-label>Half Press</ion-label>
+          <ion-icon name="aperture" item-start></ion-icon>
+          <ion-radio slot="end" value="4"></ion-radio>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
 </div>
