@@ -47,7 +47,7 @@ export class CamTriggerCardComponent {
     numerOfShots: this.getValidationArray({
       isRequired: true,
       min: 2,
-      max: 32,
+      max: 31,
       inSeconds: false
     }),
     timeBetweenShots: this.getValidationArray({
@@ -81,7 +81,7 @@ export class CamTriggerCardComponent {
       "",
       Validators.compose([
         Validators.required,
-        Validators.max(32),
+        Validators.max(31),
         Validators.min(2)
       ])
     ),
