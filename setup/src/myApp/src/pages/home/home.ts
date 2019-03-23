@@ -58,7 +58,8 @@ export class HomePage {
 
         this.ble.startScan([]).subscribe(
           device => {
-            if (DEVICES_TO_SCAN.includes(device["name"])) {
+            let deviceType = this.renameDevice(device).split("-")[0];
+            if (DEVICES_TO_SCAN.includes(deviceType)) {
               this.onDeviceDiscovered(device);
             }
           },
