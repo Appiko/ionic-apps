@@ -1,0 +1,42 @@
+page-detail {
+    .toolbar-content p {
+        margin-left: 10px;
+    }
+    
+    ion-card-header {
+        font-weight: bold;
+    }
+
+    .btn-wrapper {
+        padding: 3%;
+    }
+
+    .positioning {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .move-right {
+        float: right;
+        margin-top: 3%;
+        margin-right: 3%;
+    }
+
+    .bottom-border {
+        border-bottom: 1px solid #C0C0BE;
+    }
+
+    .input-headings {
+        font-size: 2.5em bold;
+
+    }
+
+    .input-values {
+        font-size: 1.5em;
+    }
+
+    .card-heading {
+        background-color: dark;
+        font-size: 1.5em;
+    }
+}

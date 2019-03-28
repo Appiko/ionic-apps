@@ -1,0 +1,17 @@
+<ion-header>
+  <ion-navbar color="appiko" >    
+    <ion-title>Setup - Configure Sense</ion-title>    
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding [ngClass]=" motionSensed ? 'flash' : 'normal'">
+  <div *ngIf="(connMotion || connVibrSmoke)" class="button-div">
+    <button ion-button full clear (click)="showAccelPrompt()" class="button">{{ motionMessage }}</button>
+  </div>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <h2>{{ statusMessage }}</h2>
+  </ion-toolbar>
+</ion-footer>

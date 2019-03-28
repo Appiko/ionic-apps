@@ -1,0 +1,7 @@
+{
+  "name": "Appiko-Setup",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "ionic-angular"
+}
