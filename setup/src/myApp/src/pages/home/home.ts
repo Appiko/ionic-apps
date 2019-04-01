@@ -58,7 +58,7 @@ export class HomePage {
 
         this.ble.startScan([]).subscribe(
           device => {
-            let deviceType = this.renameDevice(device).split("-")[0];
+            let deviceType = this.getDeviceType(device);
             if (DEVICES_TO_SCAN.includes(deviceType)) {
               this.onDeviceDiscovered(device);
             }
@@ -177,6 +177,19 @@ export class HomePage {
     return advertisementData;
   }
 
+  getDeviceType(device) {
+    if (this.platform.is("ios")) {
+      if (device.advertising.kCBAdvDataLocalName.substring(0, 2) == "SP") {
+        return "SensePi";
+      }
+      if (device.advertising.kCBAdvDataLocalName.substring(0, 2) == "SB") {
+        return "SenseBe";
+      }
+    }
+    if (this.platform.is("android")) {
+      return device.name;
+    }
+  }
   renameDevice(device) {
     if (this.platform.is("ios")) {
       // This will only print when on iOS
