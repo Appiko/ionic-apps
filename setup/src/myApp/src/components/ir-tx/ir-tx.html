@@ -15,7 +15,8 @@
     </button>
     <ion-card-title style="flex: 1">IR Transmitter</ion-card-title>
     <ion-toggle [(ngModel)]="irConfig.IRTxEnabled"></ion-toggle>
-    <!-- <ion-label>Lightning Fast</ion-label>
+  </ion-card-header>
+  <!-- <ion-label>Lightning Fast</ion-label>
         <ion-radio checked slot="end"></ion-radio>
       </ion-item>
       <ion-item>
@@ -32,22 +33,21 @@
       </ion-item>
     </ion-list> -->
 
-    <ion-card-content *ngIf="irConfig.IRTxEnabled">
-      <ion-title>DistanceSelection</ion-title>
-      <ion-list radio-group [(ngModel)]="irConfig.IRtxDist">
-        <ion-item>
-          <ion-label>Short</ion-label>
-          <ion-radio checked slot="end" value="0"></ion-radio>
-        </ion-item>
-        <ion-item>
-          <ion-label>Medium</ion-label>
-          <ion-radio slot="end" value="1"></ion-radio>
-        </ion-item>
-        <ion-item>
-          <ion-label>Far</ion-label>
-          <ion-radio slot="end" value="2"></ion-radio>
-        </ion-item>
-      </ion-list>
-    </ion-card-content>
-  </ion-card-header>
+  <ion-card-content *ngIf="irConfig.IRTxEnabled">
+    <ion-title>DistanceSelection</ion-title>
+    <ion-list radio-group [(ngModel)]="irConfig.IRtxDist">
+      <ion-item>
+        <ion-label>Short</ion-label>
+        <ion-radio checked slot="end" value="0"></ion-radio>
+      </ion-item>
+      <ion-item>
+        <ion-label>Medium</ion-label>
+        <ion-radio slot="end" value="1"></ion-radio>
+      </ion-item>
+      <ion-item>
+        <ion-label>Far</ion-label>
+        <ion-radio slot="end" value="2"></ion-radio>
+      </ion-item>
+    </ion-list>
+  </ion-card-content>
 </ion-card>
