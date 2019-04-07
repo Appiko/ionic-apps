@@ -179,11 +179,15 @@ export class HomePage {
 
   getDeviceType(device) {
     if (this.platform.is("ios")) {
-      if (device.advertising.kCBAdvDataLocalName.substring(0, 2) == "SP") {
-        return "SensePi";
+      if ("kCBAdvDataLocalName" in device.advertising) {
+        if (device.advertising.kCBAdvDataLocalName.substring(0, 2) == "SP") {
+          return "SensePi";
+        }
       }
-      if (device.advertising.kCBAdvDataLocalName.substring(0, 2) == "SB") {
-        return "SenseBe";
+      if ("kCBAdvDataLocalName" in device.advertising) {
+        if (device.advertising.kCBAdvDataLocalName.substring(0, 2) == "SB") {
+          return "SenseBe";
+        }
       }
     }
     if (this.platform.is("android")) {
