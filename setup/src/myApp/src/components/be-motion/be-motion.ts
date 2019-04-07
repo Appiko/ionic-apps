@@ -14,7 +14,7 @@ import { BeConfig } from "../../providers/BeConfig";
 })
 export class BeMotionComponent {
   sensitivityOnRange: number;
-  sensitivityMap = [1000, 500, 250, 100];
+  sensitivityMap = [1005, 505, 205, 55];
 
   motionConfigVal: BeConfig["motion"];
 
