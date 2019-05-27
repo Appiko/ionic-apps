@@ -62,6 +62,8 @@ export class BeDetailPage {
             this.statusMessage = `Connected to Sense Be (v ${
               this.hardwareVersion
             }) 🔋${this.batteryStatus > 2.3 ? "👍" : "👎"}`;
+
+            this.irConfig.IRValue = hardwareInfo.IRValue;
           });
           loading.dismiss();
         });

@@ -33,7 +33,7 @@ export class BleServiceProvider {
 
   /* Timer Offsets */
   TimerTimeIntervalOffset = 10; // 16bits
-  TimerOperationTimeOffset = 12; // use 01 //TODO:  
+  TimerOperationTimeOffset = 12; // use 01 //TODO:
   TimerPreFocusAndModeOffset = 13; // PreFocus- (1 bit) ; Mode (7bits) [0-4]
   TimerParamOneOffset = 14; // 16 bits
   TimerParamTwoOffset = 16; // 8 bits
@@ -91,7 +91,8 @@ export class BleServiceProvider {
       version: `${dataview.getUint8(17)}.${dataview.getUint8(
         18
       )}.${dataview.getUint8(19)}`,
-      batteryInVolts: sysinfoBattVolt
+      batteryInVolts: sysinfoBattVolt,
+      IRValue: String.fromCharCode(dataview.getUint8(12))
     };
 
     return hardwareInfo;
@@ -131,17 +132,13 @@ export class BleServiceProvider {
           paramOne: motionParamOne,
           paramTwo: dataview.getUint8(this.MotionParamTwoOffset)
         },
-        motionTriggerTime: dataview.getUint16(
-          this.MotionTriggerTimeOffset,
-          true
-        )/10
+        motionTriggerTime:
+          dataview.getUint16(this.MotionTriggerTimeOffset, true) / 10
       },
       timer: {
         timeOperationTime: dataview.getUint8(this.TimerOperationTimeOffset),
-        timerTimeInterval: dataview.getUint16(
-          this.TimerTimeIntervalOffset,
-          true
-        )/10,
+        timerTimeInterval:
+          dataview.getUint16(this.TimerTimeIntervalOffset, true) / 10,
         camConfig: {
           preFocus: dataview.getUint8(this.TimerPreFocusAndModeOffset) & 0x1,
           mode: timerMode,
@@ -230,13 +227,13 @@ export class BleServiceProvider {
     );
     dataview.setUint16(
       this.MotionTriggerTimeOffset,
-      10*config.motion.motionTriggerTime,
+      10 * config.motion.motionTriggerTime,
       true
     );
     dataview.setUint8(this.TimerOperationTimeOffset, 1);
     dataview.setUint16(
       this.TimerTimeIntervalOffset,
-      10*config.timer.timerTimeInterval,
+      10 * config.timer.timerTimeInterval,
       true
     );
     dataview.setUint8(

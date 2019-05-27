@@ -16,6 +16,7 @@ export interface BeConfig {
     IRTxEnabled: number;
     IRTxSpeed: number;
     IRtxDist: number;
+    IRValue: string;
   };
 }
 export interface CamConfig {
@@ -28,4 +29,5 @@ export interface CamConfig {
 export interface HardwareInfo {
   version: string;
   batteryInVolts: number;
+  IRValue: string;
 }
