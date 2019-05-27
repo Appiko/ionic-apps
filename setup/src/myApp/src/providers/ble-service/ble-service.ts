@@ -150,7 +150,8 @@ export class BleServiceProvider {
         IRTxTimer: dataview.getUint8(this.IRTxTimerOffset),
         IRTxEnabled: dataview.getUint8(this.IRTxConfigOffset) & 0x1,
         IRTxSpeed: (dataview.getUint8(this.IRTxConfigOffset) >> 1) & 0x11,
-        IRtxDist: dataview.getUint8(this.IRTxConfigOffset) >> 3
+        IRtxDist: dataview.getUint8(this.IRTxConfigOffset) >> 3,
+        IRValue: ""
       }
     };
 
