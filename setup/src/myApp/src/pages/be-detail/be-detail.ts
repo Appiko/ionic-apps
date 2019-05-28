@@ -30,6 +30,7 @@ export class BeDetailPage {
   hardwareVersion: HardwareInfo["version"];
   batteryStatus: HardwareInfo["batteryInVolts"];
   statusMessage = "Connecting to SENSE BE";
+  IRValue: HardwareInfo["IRValue"];
 
   constructor(
     public navCtrl: NavController,
@@ -62,6 +63,7 @@ export class BeDetailPage {
             this.statusMessage = `Connected to Sense Be (v ${
               this.hardwareVersion
             }) 🔋${this.batteryStatus > 2.3 ? "👍" : "👎"}`;
+            this.IRValue = hardwareInfo.IRValue;
 
             this.irConfig.IRValue = hardwareInfo.IRValue;
           });

@@ -1,8 +1,8 @@
 <!-- Generated template for the CamTriggerCardComponent component -->
 <ion-card *ngIf="irConfig">
-  <ion-card-header
+  <!-- <ion-card-header
     style="display: flex;align-items:center"
-    [hidden]="irConfig.IRVlaue == 'R'"
+    [hidden]="irConfig.IRValue == 'R'"
   >
     <button
       ion-button
@@ -18,7 +18,7 @@
     </button>
     <ion-card-title style="flex: 1">IR Transmitter</ion-card-title>
     <ion-toggle [(ngModel)]="irConfig.IRTxEnabled"></ion-toggle>
-  </ion-card-header>
+  </ion-card-header> -->
   <!-- <ion-label>Lightning Fast</ion-label>
         <ion-radio checked slot="end"></ion-radio>
       </ion-item>
@@ -36,11 +36,8 @@
       </ion-item>
     </ion-list> -->
 
-  <ion-card-content
-    *ngIf="irConfig.IRTxEnabled"
-    [hidden]="irConfig.IRVlaue == 'T' || irConfig.IRVlaue == 'R'"
-  >
-    <ion-title>DistanceSelection</ion-title>
+  <ion-card-content *ngIf="irConfig.IRValue == 'T'">
+    <ion-title>Distance Selection</ion-title>
     <ion-list radio-group [(ngModel)]="irConfig.IRtxDist">
       <ion-item>
         <ion-label>Short</ion-label>
