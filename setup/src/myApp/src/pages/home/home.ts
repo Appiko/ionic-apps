@@ -34,7 +34,7 @@ export class HomePage {
     private ble: BLE,
     private ngZone: NgZone,
     private cd: ChangeDetectorRef
-  ) {}
+  ) { }
 
   // To enable bluetoooth if not enabled
   ionViewDidEnter() {
@@ -185,7 +185,8 @@ export class HomePage {
         }
       }
       if ("kCBAdvDataLocalName" in device.advertising) {
-        if (device.advertising.kCBAdvDataLocalName.substring(0, 2) == "SB") {
+        let id = device.advertising.kCBAdvDataLocalName.substring(0, 2);
+        if (id == "SB" || id == "BT" || id == "BR") {
           return "SenseBe";
         }
       }
@@ -201,7 +202,8 @@ export class HomePage {
       if (device.advertising.kCBAdvDataLocalName.substring(0, 2) == "SP") {
         dev_name = "SensePi";
       }
-      if (device.advertising.kCBAdvDataLocalName.substring(0, 2) == "SB") {
+      let id = device.advertising.kCBAdvDataLocalName.substring(0, 2);
+      if (id == "SB" || id == "BT" || id == "BR") {
         dev_name = "SenseBe";
       }
       return (
