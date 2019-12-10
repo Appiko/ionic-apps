@@ -1,0 +1,39 @@
+<ion-card>
+  <ion-card-header class="card-heading">
+    <button ion-button
+            color="primary"
+            clear
+            icon-only
+            small
+            round
+            class="helper-btn"
+            (click)="helperBtnClick(HB_OPER_MODE)">
+      <ion-icon name='help-circle'></ion-icon>
+    </button>
+    Operating Mode
+  </ion-card-header>
+  <ion-list radio-group
+            [(ngModel)]="timerOpertimeSetting"
+            (ionChange)="setThreshold($event)">
+    <ion-item>
+      <ion-label>Night Only</ion-label>
+      <ion-radio value="0"></ion-radio>
+    </ion-item>
+    <ion-item>
+      <ion-label>Day Only</ion-label>
+      <ion-radio value="1"></ion-radio>
+    </ion-item>
+    <ion-item>
+      <ion-label>Day and Night</ion-label>
+      <ion-radio value="2"></ion-radio>
+    </ion-item>
+  </ion-list>
+  <ion-item *ngIf="timerShowTwilight">
+    <ion-label>Include twilight</ion-label>
+    <ion-checkbox [(ngModel)]="timerDNTwilight"
+                  disabled="false"
+                  color="primary"
+                  item-end
+                  (click)="setThreshold(timerOpertimeSetting)"></ion-checkbox>
+  </ion-item>
+</ion-card>

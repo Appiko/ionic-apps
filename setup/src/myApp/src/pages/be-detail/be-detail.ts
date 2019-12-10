@@ -27,6 +27,9 @@ export class BeDetailPage {
   motionConfig: BeConfig["motion"];
   timerConfig: BeConfig["timer"];
   irConfig: BeConfig["ir"];
+  deviceSpeed: BeConfig["deviceSpeed"];
+  is09: BeConfig["is09"];
+  isRx: BeConfig["isRx"];
   hardwareVersion: HardwareInfo["version"];
   batteryStatus: HardwareInfo["batteryInVolts"];
   statusMessage = "Connecting to SENSE BE";
@@ -56,13 +59,16 @@ export class BeDetailPage {
           this.motionConfig = config.motion;
           this.timerConfig = config.timer;
           this.irConfig = config.ir;
+          this.is09 = config.is09;
+          this.isRx = config.isRx;
+          this.deviceSpeed = config.deviceSpeed;
           this.triggerMode = config.triggerMode;
           this.bleService.getSysInfo((hardwareInfo: HardwareInfo) => {
             (this.batteryStatus = hardwareInfo.batteryInVolts),
               (this.hardwareVersion = hardwareInfo.version);
             this.statusMessage = `Connected to Sense Be (v ${
               this.hardwareVersion
-            }) 🔋${this.batteryStatus > 2.3 ? "👍" : "👎"}`;
+              }) 🔋${this.batteryStatus > 2.3 ? "👍" : "👎"}`;
             this.IRValue = hardwareInfo.IRValue;
 
             this.irConfig.IRValue = hardwareInfo.IRValue;
@@ -88,18 +94,20 @@ export class BeDetailPage {
   ionViewDidLoad() {
     console.log("ionViewDidLoad BeDetailPage");
     setInterval(() => {
-      console.log(
-        "BEDetails" +
-          JSON.stringify(
-            {
-              mode: this.triggerMode,
-              motion: this.motionConfig,
-              timer: this.timerConfig,
-              ir: this.irConfig
-            },
-            undefined,
-            2
-          )
+      console.dir(
+        "BEDetailssss" +
+        JSON.stringify(
+          {
+            mode: this.triggerMode,
+            motion: this.motionConfig,
+            timer: this.timerConfig,
+            ir: this.irConfig,
+            is09: this.is09,
+            isRx: this.isRx,
+          },
+          undefined,
+          2
+        ) + `${this.isRx}`
       );
     }, 3000);
   }
@@ -123,7 +131,10 @@ export class BeDetailPage {
         triggerMode: this.triggerMode,
         motion: this.motionConfig,
         timer: this.timerConfig,
-        ir: this.irConfig
+        ir: this.irConfig,
+        deviceSpeed: this.deviceSpeed,
+        isRx: this.isRx,
+        is09: this.is09,
       },
       (didWrite: boolean) => {
         this.onWrite(didWrite);

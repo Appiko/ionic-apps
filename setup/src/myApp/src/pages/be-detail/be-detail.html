@@ -2,70 +2,128 @@
 
   See http://ionicframework.com/docs/components/#navigation for more info on
   Ionic pages and navigation. -->
+
 <ion-header>
   <ion-navbar color="appiko">
     <ion-title>SenseBe</ion-title>
   </ion-navbar>
 </ion-header>
-
 <ion-content>
-  <ion-card [hidden]="IRValue == 'T'">
-    <ion-card-header style="display: flex;align-items:center">
-      <button
-        ion-button
-        color="primary"
-        clear
-        icon-only
-        small
-        round
-        class="helper-btn"
-        (click)="help.show('Trigger Mode')"
-      >
-        <ion-icon name="help-circle"></ion-icon>
-      </button>
-      <ion-card-title>Trigger Mode</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-list radio-group (ionChange)="changeTriggerMode($event)">
-        <ion-item>
-          <ion-label>Motion</ion-label>
-          <ion-radio
-            slot="end"
-            value="1"
-            checked="{{ triggerMode == 1 }}"
-          ></ion-radio>
-        </ion-item>
-        <ion-item>
-          <ion-label>Timer</ion-label>
-          <ion-radio
-            slot="end"
-            value="0"
-            checked="{{ triggerMode == 0 }}"
-          ></ion-radio>
-        </ion-item>
-      </ion-list>
-    </ion-card-content>
-  </ion-card>
+  <ion-content *ngIf="!is09"
+               class="has-header">
 
-  <ion-title
-    style="text-align: center; color: black;"
-    [hidden]="IRValue == 'T'"
-    padding
-  >
-    {{ triggerMode == 1 ? "Motion Setting" : "Timer Settings" }}
-  </ion-title>
+    <ion-card [hidden]="IRValue == 'T'">
+      <ion-card-header style="display: flex;align-items:center">
+        <button ion-button
+                color="primary"
+                clear
+                icon-only
+                small
+                round
+                class="helper-btn"
+                (click)="help.show('Trigger Mode')">
+          <ion-icon name="help-circle"></ion-icon>
+        </button>
+        <ion-card-title>Trigger Mode</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-list radio-group
+                  (ionChange)="changeTriggerMode($event)">
+          <ion-item>
+            <ion-label>Motion</ion-label>
+            <ion-radio slot="end"
+                       value="1"
+                       checked="{{ triggerMode == 1 }}"></ion-radio>
+          </ion-item>
+          <ion-item>
+            <ion-label>Timer</ion-label>
+            <ion-radio slot="end"
+                       value="0"
+                       checked="{{ triggerMode == 0 }}"></ion-radio>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
 
-  <be-motion
-    *ngIf="triggerMode == 1"
-    [(motionConfig)]="motionConfig"
-    [hidden]="IRValue == 'T'"
-  ></be-motion>
-  <be-timer
-    *ngIf="triggerMode == 0"
-    [hidden]="IRValue == 'T'"
-    [(timerConfig)]="timerConfig"
-  ></be-timer>
-  <ir-tx [(irConfig)]="irConfig"></ir-tx>
+    <ion-title style="text-align: center; color: black;"
+               [hidden]="IRValue == 'T'"
+               padding>
+      {{ triggerMode == 1 ? "Motion Setting" : "Timer Settings" }}
+    </ion-title>
+
+    <be-motion *ngIf="triggerMode == 1"
+               [(motionConfig)]="motionConfig"
+               [hidden]="IRValue == 'T'"></be-motion>
+    <be-timer *ngIf="triggerMode == 0"
+              [hidden]="IRValue == 'T'"
+              [(timerConfig)]="timerConfig"></be-timer>
+    <ir-tx [(irConfig)]="irConfig"></ir-tx>
+  </ion-content>
+
+  <ion-content *ngIf="is09">
+
+    <ion-content *ngIf="isRx"
+                 class="has-header">
+      <ion-card>
+        <ion-card-header style="display: flex;align-items:center">
+          <button ion-button
+                  color="primary"
+                  clear
+                  icon-only
+                  small
+                  round
+                  class="helper-btn"
+                  (click)="help.show('Trigger Mode')">
+            <ion-icon name="help-circle"></ion-icon>
+          </button>
+          <ion-card-title>Trigger Mode</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-list radio-group
+                    (ionChange)="changeTriggerMode($event)">
+            <ion-item>
+              <ion-label>Motion</ion-label>
+              <ion-radio slot="end"
+                         value="1"
+                         checked="{{ triggerMode == 1 }}"></ion-radio>
+            </ion-item>
+            <ion-item>
+              <ion-label>Timer</ion-label>
+              <ion-radio slot="end"
+                         value="0"
+                         checked="{{ triggerMode == 0 }}"></ion-radio>
+            </ion-item>
+          </ion-list>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-title style="text-align: center; color: black;"
+                 [hidden]="IRValue == 'T'"
+                 padding>
+        {{ triggerMode == 1 ? "Motion Setting" : "Timer Settings" }}
+      </ion-title>
+
+      <operation-time [(ambientOptions)]="triggerMode == 1  ?motionConfig.ambientOptions: timerConfig.ambientOptions">
+      </operation-time>
+      <be-motion *ngIf="triggerMode == 1"
+                 [(motionConfig)]="motionConfig">
+      </be-motion>
+
+      <be-timer *ngIf="triggerMode == 0"
+                [(timerConfig)]="timerConfig">
+      </be-timer>
+
+    </ion-content>
+
+    <ion-content *ngIf="!isRx"
+                 class="has-header">
+
+      <ir-tx [(irConfig)]="irConfig">
+      </ir-tx>
+
+    </ion-content>
+  </ion-content>
+
 </ion-content>
 <ion-footer class="positioning">
   <ion-toolbar item-left>
@@ -73,20 +131,16 @@
   </ion-toolbar>
 
   <!-- Button to write to the device -->
-  <button
-    ion-button
-    item-right
-    class="move-right"
-    (click)="onButtonClickWrite()"
-  >
+  <button ion-button
+          item-right
+          class="move-right"
+          (click)="onButtonClickWrite()">
     Write
   </button>
-  <button
-    ion-button
-    item-right
-    class="move-right"
-    (click)="onButtonClickClose()"
-  >
+  <button ion-button
+          item-right
+          class="move-right"
+          (click)="onButtonClickClose()">
     Close
   </button>
 </ion-footer>

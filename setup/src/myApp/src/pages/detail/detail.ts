@@ -313,11 +313,11 @@ export class DetailPage {
       .catch(e =>
         console.log(
           "Error trying to read data from service " +
-            UUID_SENSE_PI_SERVICE +
-            " and char " +
-            UUID_SENSE_PI_USER_SETTINGS +
-            " : " +
-            e
+          UUID_SENSE_PI_SERVICE +
+          " and char " +
+          UUID_SENSE_PI_USER_SETTINGS +
+          " : " +
+          e
         )
       );
 
@@ -336,11 +336,11 @@ export class DetailPage {
       .catch(e =>
         console.log(
           "Error trying to read data from service " +
-            UUID_SENSE_PI_SERVICE +
-            " and char " +
-            UUID_SENSE_PI_USER_SETTINGS +
-            " : " +
-            e
+          UUID_SENSE_PI_SERVICE +
+          " and char " +
+          UUID_SENSE_PI_USER_SETTINGS +
+          " : " +
+          e
         )
       );
     /*
@@ -467,9 +467,9 @@ export class DetailPage {
         this.radioTimerClickedBurst = true;
         console.log(
           "Burst Gap selected as " +
-            this.timerBurstGap +
-            " and burst number of shots is " +
-            this.timerBurstNumber
+          this.timerBurstGap +
+          " and burst number of shots is " +
+          this.timerBurstNumber
         );
         break;
       }
@@ -486,9 +486,9 @@ export class DetailPage {
         this.radioTimerClickedVideo = true;
         console.log(
           "TIMER: videoDuration = " +
-            this.timerVideoDuration +
-            " videoExtension = " +
-            this.timerVideoExtension
+          this.timerVideoDuration +
+          " videoExtension = " +
+          this.timerVideoExtension
         );
         break;
       }
@@ -566,9 +566,9 @@ export class DetailPage {
         this.radioPirClickedBurst = true;
         console.log(
           "Burst Gap selected as " +
-            this.pirBurstGap +
-            " and burst number of shots is " +
-            this.pirBurstNumber
+          this.pirBurstGap +
+          " and burst number of shots is " +
+          this.pirBurstNumber
         );
         break;
       }
@@ -583,9 +583,9 @@ export class DetailPage {
         this.radioPirClickedVideo = true;
         console.log(
           "Pir: videoDuration = " +
-            this.pirVideoDuration +
-            " videoExtension = " +
-            this.pirVideoExtension
+          this.pirVideoDuration +
+          " videoExtension = " +
+          this.pirVideoExtension
         );
         break;
       }
@@ -869,11 +869,11 @@ export class DetailPage {
     // == PIR Settings ====
     console.log(
       "PIR OpertimeSetting DN Threshold = " +
-        (dataview.getUint8(OFFSET_PIR_OPER) >> 1)
+      (dataview.getUint8(OFFSET_PIR_OPER) >> 1)
     );
     console.log(
       "PIR OpertimeSetting DN mode = " +
-        (dataview.getUint8(OFFSET_PIR_OPER) & 1)
+      (dataview.getUint8(OFFSET_PIR_OPER) & 1)
     );
 
     console.log("PIR mode (1 byte)= " + dataview.getUint8(OFFSET_PIR_MODE));
@@ -882,39 +882,39 @@ export class DetailPage {
         //no extra data to record.
         console.log(
           "PIR Mode Larger Value (2 bytes) =" +
-            dataview.getUint16(OFFSET_PIR_MODE_DATA_LARGER_VALUE, true)
+          dataview.getUint16(OFFSET_PIR_MODE_DATA_LARGER_VALUE, true)
         );
         console.log(
           "PIR Mode Smaller Value (1 bytes) =" +
-            dataview.getUint8(OFFSET_PIR_MODE_DATA_SMALLER_VALUE)
+          dataview.getUint8(OFFSET_PIR_MODE_DATA_SMALLER_VALUE)
         );
         break;
       }
       case MODE_SETTING.TRIGGER_BURST: {
         console.log(
           "PIR BurstGap (2 bytes)= " +
-            dataview.getUint16(OFFSET_PIR_MODE_BURST_GAP, true)
+          dataview.getUint16(OFFSET_PIR_MODE_BURST_GAP, true)
         );
         console.log(
           "PIR BurstNumber (1 byte)= " +
-            dataview.getUint8(OFFSET_PIR_MODE_BURST_NUMBER)
+          dataview.getUint8(OFFSET_PIR_MODE_BURST_NUMBER)
         );
         break;
       }
       case MODE_SETTING.TRIGGER_BULB_EXPOSURE: {
         console.log(
           "PIR BulbExposureTime = (3 bytes)" +
-            (dataview.getUint16(OFFSET_PIR_MODE_BULB_EXPOSURE, true) +
-              (dataview.getUint8(OFFSET_PIR_MODE_BULB_EXPOSURE + 2) << 16))
+          (dataview.getUint16(OFFSET_PIR_MODE_BULB_EXPOSURE, true) +
+            (dataview.getUint8(OFFSET_PIR_MODE_BULB_EXPOSURE + 2) << 16))
         );
         break;
       }
       case MODE_SETTING.TRIGGER_VIDEO: {
         console.log(
           "PIR VideoDuration = (2 bytes)" +
-            dataview.getUint16(OFFSET_PIR_MODE_VIDEO_DURATION, true) +
-            " VideoExtension (1 byte)= " +
-            dataview.getUint8(OFFSET_PIR_MODE_VIDEO_EXTENSION)
+          dataview.getUint16(OFFSET_PIR_MODE_VIDEO_DURATION, true) +
+          " VideoExtension (1 byte)= " +
+          dataview.getUint8(OFFSET_PIR_MODE_VIDEO_EXTENSION)
         );
         break;
       }
@@ -928,26 +928,26 @@ export class DetailPage {
     );
     console.log(
       "PIR Amplification (1 byte)= " +
-        dataview.getUint8(OFFSET_PIR_AMPLIFICATION)
+      dataview.getUint8(OFFSET_PIR_AMPLIFICATION)
     );
     console.log(
       "PIR InterTriggerTime (2 bytes)= " +
-        dataview.getUint16(OFFSET_PIR_INTERTRIGGERTIME, true)
+      dataview.getUint16(OFFSET_PIR_INTERTRIGGERTIME, true)
     );
 
     // === TIMER Settings ===
     console.log(
       "TIMER timerInterval (2 bytes)= " +
-        dataview.getUint16(OFFSET_TIMER_INTERVAL, true)
+      dataview.getUint16(OFFSET_TIMER_INTERVAL, true)
     );
 
     console.log(
       "TIMER OpertimeSetting DN threshold = " +
-        (dataview.getUint8(OFFSET_TIMER_OPER) >> 1)
+      (dataview.getUint8(OFFSET_TIMER_OPER) >> 1)
     );
     console.log(
       "TIMER OpertimeSetting DN mode = " +
-        (dataview.getUint8(OFFSET_TIMER_OPER) & 1)
+      (dataview.getUint8(OFFSET_TIMER_OPER) & 1)
     );
 
     console.log("TIMER mode (1 byte)= " + dataview.getUint8(OFFSET_TIMER_MODE));
@@ -956,39 +956,39 @@ export class DetailPage {
         //no extra data to record.
         console.log(
           "TIMER Mode Larger Value (2 bytes)=" +
-            dataview.getUint16(OFFSET_TIMER_MODE_DATA_LARGER_VALUE, true)
+          dataview.getUint16(OFFSET_TIMER_MODE_DATA_LARGER_VALUE, true)
         );
         console.log(
           "TIMER Mode Smaller Value (1 byte)=" +
-            dataview.getUint8(OFFSET_TIMER_MODE_DATA_SMALLER_VALUE)
+          dataview.getUint8(OFFSET_TIMER_MODE_DATA_SMALLER_VALUE)
         );
         break;
       }
       case MODE_SETTING.TRIGGER_BURST: {
         console.log(
           "TIMER BurstGap (2 bytes)= " +
-            dataview.getUint16(OFFSET_TIMER_MODE_BURST_GAP, true)
+          dataview.getUint16(OFFSET_TIMER_MODE_BURST_GAP, true)
         );
         console.log(
           "TIMER BurstNumber (1 byte)= " +
-            dataview.getUint8(OFFSET_TIMER_MODE_BURST_NUMBER)
+          dataview.getUint8(OFFSET_TIMER_MODE_BURST_NUMBER)
         );
         break;
       }
       case MODE_SETTING.TRIGGER_BULB_EXPOSURE: {
         console.log(
           "TIMER BulbExposureTime (3 bytes) = " +
-            (dataview.getUint16(OFFSET_TIMER_MODE_BULB_EXPOSURE, true) +
-              (dataview.getUint8(OFFSET_TIMER_MODE_BULB_EXPOSURE + 2) << 16))
+          (dataview.getUint16(OFFSET_TIMER_MODE_BULB_EXPOSURE, true) +
+            (dataview.getUint8(OFFSET_TIMER_MODE_BULB_EXPOSURE + 2) << 16))
         );
         break;
       }
       case MODE_SETTING.TRIGGER_VIDEO: {
         console.log(
           "TIMER VideoDuration (2 bytes)= " +
-            dataview.getUint16(OFFSET_TIMER_MODE_VIDEO_DURATION, true) +
-            " VideoExtension (1 byte)= " +
-            dataview.getUint8(OFFSET_TIMER_MODE_VIDEO_EXTENSION)
+          dataview.getUint16(OFFSET_TIMER_MODE_VIDEO_DURATION, true) +
+          " VideoExtension (1 byte)= " +
+          dataview.getUint8(OFFSET_TIMER_MODE_VIDEO_EXTENSION)
         );
         break;
       }
@@ -1036,11 +1036,11 @@ export class DetailPage {
     dataview.setUint8(OFFSET_PIR_OPER, pirOperTimeVal);
     console.log(
       "PIR DNT = " +
-        (pirOperTimeVal >> 1) +
-        " + " +
-        this.pirOpertimeSetting +
-        " = " +
-        pirOperTimeVal
+      (pirOperTimeVal >> 1) +
+      " + " +
+      this.pirOpertimeSetting +
+      " = " +
+      pirOperTimeVal
     );
 
     dataview.setUint8(OFFSET_PIR_MODE, this.pirMode);
@@ -1159,11 +1159,11 @@ export class DetailPage {
     dataview.setUint8(OFFSET_TIMER_OPER, timerOperTimeVal);
     console.log(
       "PIR DNT = " +
-        (timerOperTimeVal >> 1) +
-        " + " +
-        this.timerOpertimeSetting +
-        " = " +
-        timerOperTimeVal
+      (timerOperTimeVal >> 1) +
+      " + " +
+      this.timerOpertimeSetting +
+      " = " +
+      timerOperTimeVal
     );
 
     dataview.setUint8(OFFSET_TIMER_MODE, this.timerMode);

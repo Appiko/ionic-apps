@@ -1,18 +1,21 @@
 export interface BeConfig {
   triggerMode: number;
+  deviceSpeed: number;
+  is09: boolean;
+  isRx: boolean;
   motion: {
-    motionOpertationTime: number;
+    ambientOptions: AmbientOptions;
     motionSensitivity: number;
     motionTriggerTime: number;
     camConfig: CamConfig;
   };
   timer: {
-    timeOperationTime: number;
+    ambientOptions: AmbientOptions;
     timerTimeInterval: number;
     camConfig: CamConfig;
   };
   ir: {
-    IRTxTimer: number;
+    ambientOptions: AmbientOptions;
     IRTxEnabled: number;
     IRTxSpeed: number;
     IRtxDist: number;
@@ -30,4 +33,9 @@ export interface HardwareInfo {
   version: string;
   batteryInVolts: number;
   IRValue: string;
+}
+
+export interface AmbientOptions {
+  aboveThreshold: boolean;
+  threshold: number;
 }

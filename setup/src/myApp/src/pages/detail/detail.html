@@ -1,11 +1,12 @@
 <ion-header>
   <ion-navbar color="appiko">
-    <ion-title>{{ peripheral.name}} | 🔋{{sysinfoBattOK}} {{sysinfoBattVolt}} V | {{sysinfoFwVerMajor}}.{{sysinfoFwVerMinor}}.{{sysinfoFwVerBuild}} fw</ion-title>
+    <ion-title>{{ peripheral.name}} | 🔋{{sysinfoBattOK}} {{sysinfoBattVolt}} V |
+      {{sysinfoFwVerMajor}}.{{sysinfoFwVerMinor}}.{{sysinfoFwVerBuild}} fw</ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content class="padding">
-<!-- Hide Profile buttons for now : just delivering a change for a demo to sandesh.
+  <!-- Hide Profile buttons for now : just delivering a change for a demo to sandesh.
 <ion-fab right edge>
   <button ion-fab >
     Profile
@@ -19,22 +20,32 @@
   <!-- Card with radio buttons to select trigger mode -->
   <ion-card>
     <ion-card-header class="card-heading">
-      <button ion-button color="primary" clear icon-only small round class="helper-btn" (click)="helperBtnClick(HB_CAM_TRIGGER_SETTING)">
+      <button ion-button
+              color="primary"
+              clear
+              icon-only
+              small
+              round
+              class="helper-btn"
+              (click)="helperBtnClick(HB_CAM_TRIGGER_SETTING)">
         <ion-icon name='help-circle'></ion-icon>
       </button>
       Camera Trigger Source
     </ion-card-header>
-    
-    <ion-list radio-group [(ngModel)]="triggerSetting" ng-init="triggerSetting=1" (ionChange)="setTriggerSetting($event)">
-      
-      <ion-item >
+
+    <ion-list radio-group
+              [(ngModel)]="triggerSetting"
+              ng-init="triggerSetting=1"
+              (ionChange)="setTriggerSetting($event)">
+
+      <ion-item>
         <ion-label>Time-Lapse Only</ion-label>
         <ion-radio value="0"></ion-radio>
       </ion-item>
-      <ion-item >
+      <ion-item>
         <ion-label>Motion Only</ion-label>
         <ion-radio value="1"></ion-radio>
-      </ion-item>      
+      </ion-item>
       <!-- Disabling the both timer and motion option till some bugs are ironed out
       <ion-item>
         <ion-label>Both Timer and Motion</ion-label>
@@ -56,29 +67,50 @@
   </ion-card>  
   -->
   <!-- Time interval for timer trigger -->
-  <ion-card *ngIf="radioClickedTriggerTimer">  
+  <ion-card *ngIf="radioClickedTriggerTimer">
     <ion-card-header class="card-heading">
-      <button ion-button color="primary" clear icon-only small round class="helper-btn" (click)="helperBtnClick(HB_TIMER_INTERVAL)">
+      <button ion-button
+              color="primary"
+              clear
+              icon-only
+              small
+              round
+              class="helper-btn"
+              (click)="helperBtnClick(HB_TIMER_INTERVAL)">
         <ion-icon name='help-circle'></ion-icon>
       </button>
       Time-Lapse Interval
     </ion-card-header>
     <ion-list inset>
-    <ion-item >
-      <ion-label color="dark"> Interval (s) </ion-label>
-      <ion-input type=number [(ngModel)]="timerInterval" ng-init="timerInterval=50" (ionChange)="setTriggerTimerInterval($event)" placeholder="seconds"> </ion-input>
-    </ion-item>
-	</ion-list>
+      <ion-item>
+        <ion-label color="dark"> Interval (s) </ion-label>
+        <ion-input type=number
+                   [(ngModel)]="timerInterval"
+                   ng-init="timerInterval=50"
+                   (ionChange)="setTriggerTimerInterval($event)"
+                   placeholder="seconds"> </ion-input>
+      </ion-item>
+    </ion-list>
   </ion-card>
 
-  <ion-card *ngIf="radioClickedTriggerTimer">  
-   <ion-card-header class="card-heading">
-      <button ion-button color="primary" clear icon-only small round class="helper-btn" (click)="helperBtnClick(HB_OPER_MODE)">
+  <ion-card *ngIf="radioClickedTriggerTimer">
+    <ion-card-header class="card-heading">
+      <button ion-button
+              color="primary"
+              clear
+              icon-only
+              small
+              round
+              class="helper-btn"
+              (click)="helperBtnClick(HB_OPER_MODE)">
         <ion-icon name='help-circle'></ion-icon>
       </button>
       Operating Mode
-    </ion-card-header> 
-    <ion-list radio-group [(ngModel)]="timerOpertimeSetting" ng-init="timerOpertimeSetting=2" (ionChange)="setTimerOpertimeSetting($event)">
+    </ion-card-header>
+    <ion-list radio-group
+              [(ngModel)]="timerOpertimeSetting"
+              ng-init="timerOpertimeSetting=2"
+              (ionChange)="setTimerOpertimeSetting($event)">
       <ion-item>
         <ion-label>Night Only</ion-label>
         <ion-radio value="0"></ion-radio>
@@ -86,89 +118,132 @@
       <ion-item>
         <ion-label>Day Only</ion-label>
         <ion-radio value="1"></ion-radio>
-      </ion-item>      
+      </ion-item>
       <ion-item>
         <ion-label>Day and Night</ion-label>
         <ion-radio value="2"></ion-radio>
       </ion-item>
-    </ion-list>  
-	<ion-item *ngIf="timerShowTwilight">
+    </ion-list>
+    <ion-item *ngIf="timerShowTwilight">
       <ion-label>Include twilight</ion-label>
-      <ion-checkbox [(ngModel)]="timerDNTwilight" disabled="false" color="primary" item-end (click)="timerShowTwilightClick($event)"></ion-checkbox>
+      <ion-checkbox [(ngModel)]="timerDNTwilight"
+                    disabled="false"
+                    color="primary"
+                    item-end
+                    (click)="timerShowTwilightClick($event)"></ion-checkbox>
     </ion-item>
   </ion-card>
-  <ion-card *ngIf="radioClickedTriggerTimer">  
-   <ion-card-header class="card-heading">
-      <button ion-button color="primary" clear icon-only small round class="helper-btn" (click)="helperBtnClick(HB_TRIGGER_MODE_TIMER)">
+  <ion-card *ngIf="radioClickedTriggerTimer">
+    <ion-card-header class="card-heading">
+      <button ion-button
+              color="primary"
+              clear
+              icon-only
+              small
+              round
+              class="helper-btn"
+              (click)="helperBtnClick(HB_TRIGGER_MODE_TIMER)">
         <ion-icon name='help-circle'></ion-icon>
       </button>
-      Trigger 
-    </ion-card-header>  
-    <ion-list radio-group [(ngModel)]="timerMode" ng-init="timerMode=0" (ionChange)="setTimerMode($event)">
+      Trigger
+    </ion-card-header>
+    <ion-list radio-group
+              [(ngModel)]="timerMode"
+              ng-init="timerMode=0"
+              (ionChange)="setTimerMode($event)">
       <ion-item>
-       <ion-label> Single Shot </ion-label>
-       <ion-icon name="image" item-start></ion-icon>
-       <ion-radio value = "0"></ion-radio>
-      </ion-item>
-      
-      <ion-item>
-       <ion-label> Multi Shot </ion-label>
-       <ion-icon name="images" item-start></ion-icon>
-       <ion-radio value = "1"></ion-radio>
-      </ion-item>
-      
-      <ion-item *ngIf="radioTimerClickedBurst" >
-       <ion-label color="primary">Number of shots per trigger </ion-label>
-       <ion-input type="number" [(ngModel)]="timerBurstNumber" ng-init="timerBurstNumber=0" (ionChange)="setTimerBurstNumber($event)" ></ion-input>
-      </ion-item>
-      <ion-item *ngIf="radioTimerClickedBurst" >
-        <ion-label color="primary" >Time between shots (s) </ion-label>
-        <ion-input type="number" [(ngModel)]="timerBurstGap" ng-init="timerBurstGap=0" (ionChange)="setTimerBurstGap($event)" placeholder="Enter value in s"></ion-input>
-      </ion-item>      
-      
-      <ion-item>
-       <ion-label> Long Press </ion-label>
-       <ion-icon name="bulb" item-start></ion-icon>
-       <ion-radio value = "2"></ion-radio>
+        <ion-label> Single Shot </ion-label>
+        <ion-icon name="image"
+                  item-start></ion-icon>
+        <ion-radio value="0"></ion-radio>
       </ion-item>
 
-      <ion-item *ngIf="radioTimerClickedBulb" >
-        <ion-label color="primary" >Long press time (s)
-        </ion-label>
-        <ion-input type="number" [(ngModel)]="timerBulbExposureTime" ng-init="timerBulbExposureTime=0" (ionChange)="setTimerBulbExposureTime($event)" placeholder="seconds"></ion-input>
+      <ion-item>
+        <ion-label> Multi Shot </ion-label>
+        <ion-icon name="images"
+                  item-start></ion-icon>
+        <ion-radio value="1"></ion-radio>
       </ion-item>
-      
+
+      <ion-item *ngIf="radioTimerClickedBurst">
+        <ion-label color="primary">Number of shots per trigger </ion-label>
+        <ion-input type="number"
+                   [(ngModel)]="timerBurstNumber"
+                   ng-init="timerBurstNumber=0"
+                   (ionChange)="setTimerBurstNumber($event)"></ion-input>
+      </ion-item>
+      <ion-item *ngIf="radioTimerClickedBurst">
+        <ion-label color="primary">Time between shots (s) </ion-label>
+        <ion-input type="number"
+                   [(ngModel)]="timerBurstGap"
+                   ng-init="timerBurstGap=0"
+                   (ionChange)="setTimerBurstGap($event)"
+                   placeholder="Enter value in s"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label> Long Press </ion-label>
+        <ion-icon name="bulb"
+                  item-start></ion-icon>
+        <ion-radio value="2"></ion-radio>
+      </ion-item>
+
+      <ion-item *ngIf="radioTimerClickedBulb">
+        <ion-label color="primary">Long press time (s)
+        </ion-label>
+        <ion-input type="number"
+                   [(ngModel)]="timerBulbExposureTime"
+                   ng-init="timerBulbExposureTime=0"
+                   (ionChange)="setTimerBulbExposureTime($event)"
+                   placeholder="seconds"></ion-input>
+      </ion-item>
+
       <ion-item *ngIf="(make!=1)">
-       <ion-label> Video Mode </ion-label>
-       <ion-icon name="videocam" item-start></ion-icon>
-       <ion-radio value = "3"></ion-radio>
+        <ion-label> Video Mode </ion-label>
+        <ion-icon name="videocam"
+                  item-start></ion-icon>
+        <ion-radio value="3"></ion-radio>
       </ion-item>
 
       <ion-item *ngIf="radioTimerClickedVideo&&(make!=1)">
-        <ion-label color="primary" >Duration of the video (s)
+        <ion-label color="primary">Duration of the video (s)
         </ion-label>
-        <ion-input type="number" [(ngModel)]="timerVideoDuration" ng-init="timerVideoDuration=0" (ionChange)="setTimerVideoDuration($event)" placeholder="seconds"></ion-input>
+        <ion-input type="number"
+                   [(ngModel)]="timerVideoDuration"
+                   ng-init="timerVideoDuration=0"
+                   (ionChange)="setTimerVideoDuration($event)"
+                   placeholder="seconds"></ion-input>
       </ion-item>
 
       <ion-item>
-       <ion-label> Half Press (Focus) </ion-label>
-       <ion-icon name="aperture" item-start></ion-icon>
-       <ion-radio value = "4"></ion-radio>
+        <ion-label> Half Press (Focus) </ion-label>
+        <ion-icon name="aperture"
+                  item-start></ion-icon>
+        <ion-radio value="4"></ion-radio>
       </ion-item>
     </ion-list>
 
   </ion-card>
-  
 
   <ion-card *ngIf="radioClickedTriggerPir">
     <ion-card-header class="card-heading">
-      <button ion-button color="primary" clear icon-only small round class="helper-btn" (click)="helperBtnClick(HB_OPER_MODE)">
+      <button ion-button
+              color="primary"
+              clear
+              icon-only
+              small
+              round
+              class="helper-btn"
+              (click)="helperBtnClick(HB_OPER_MODE)">
         <ion-icon name='help-circle'></ion-icon>
       </button>
-      Operating Mode 
+      Operating Mode
     </ion-card-header>
-   
-    <ion-list radio-group [(ngModel)]="pirOpertimeSetting" ng-init="pirOpertimeSetting=2" (ionChange)="setPirOpertimeSetting($event)">
+
+    <ion-list radio-group
+              [(ngModel)]="pirOpertimeSetting"
+              ng-init="pirOpertimeSetting=2"
+              (ionChange)="setPirOpertimeSetting($event)">
       <ion-item>
         <ion-label>Night Only</ion-label>
         <ion-radio value="0"></ion-radio>
@@ -176,86 +251,125 @@
       <ion-item>
         <ion-label>Day Only</ion-label>
         <ion-radio value="1"></ion-radio>
-      </ion-item>      
+      </ion-item>
       <ion-item>
         <ion-label>Day and Night</ion-label>
         <ion-radio value="2"></ion-radio>
       </ion-item>
-    </ion-list>  
-	<ion-item *ngIf="pirShowTwilight">
+    </ion-list>
+    <ion-item *ngIf="pirShowTwilight">
       <ion-label>Include twilight</ion-label>
-      <ion-checkbox [(ngModel)]="pirDNTwilight" disabled="false" color="primary" item-end (click)="pirShowTwilightClick($event)"></ion-checkbox>
+      <ion-checkbox [(ngModel)]="pirDNTwilight"
+                    disabled="false"
+                    color="primary"
+                    item-end
+                    (click)="pirShowTwilightClick($event)"></ion-checkbox>
     </ion-item>
   </ion-card>
 
   <ion-card *ngIf="radioClickedTriggerPir">
     <ion-card-header class="card-heading">
-      <button ion-button color="primary" clear icon-only small round class="helper-btn" (click)="helperBtnClick(HB_TRIGGER_MODE_PIR)">
+      <button ion-button
+              color="primary"
+              clear
+              icon-only
+              small
+              round
+              class="helper-btn"
+              (click)="helperBtnClick(HB_TRIGGER_MODE_PIR)">
         <ion-icon name='help-circle'></ion-icon>
       </button>
-      Trigger Mode 
+      Trigger Mode
     </ion-card-header>
-    <ion-list radio-group [(ngModel)]="pirMode" ng-init="pirMode=0" (ionChange)="setPirMode($event)">
+    <ion-list radio-group
+              [(ngModel)]="pirMode"
+              ng-init="pirMode=0"
+              (ionChange)="setPirMode($event)">
       <ion-item>
-       <ion-label> Single Shot </ion-label>
-       <ion-icon name="image" item-start></ion-icon>
-       <ion-radio value = "0"></ion-radio>
-      </ion-item>
-      
-      <ion-item>
-       <ion-label> Multi Shot </ion-label>
-       <ion-icon name="images" item-start></ion-icon>
-       <ion-radio value = "1"></ion-radio>
+        <ion-label> Single Shot </ion-label>
+        <ion-icon name="image"
+                  item-start></ion-icon>
+        <ion-radio value="0"></ion-radio>
       </ion-item>
 
-      <ion-item *ngIf="radioPirClickedBurst" >
-       <ion-label color="primary">Number of shots per trigger </ion-label>
-       <ion-input type="number" [(ngModel)]="pirBurstNumber" ng-init="pirBurstNumber=0" (ionChange)="setPirBurstNumber($event)"></ion-input>
+      <ion-item>
+        <ion-label> Multi Shot </ion-label>
+        <ion-icon name="images"
+                  item-start></ion-icon>
+        <ion-radio value="1"></ion-radio>
       </ion-item>
-      <ion-item *ngIf="radioPirClickedBurst" >
+
+      <ion-item *ngIf="radioPirClickedBurst">
+        <ion-label color="primary">Number of shots per trigger </ion-label>
+        <ion-input type="number"
+                   [(ngModel)]="pirBurstNumber"
+                   ng-init="pirBurstNumber=0"
+                   (ionChange)="setPirBurstNumber($event)"></ion-input>
+      </ion-item>
+      <ion-item *ngIf="radioPirClickedBurst">
         <ion-label color="primary">Time between shots (s)
         </ion-label>
-        <ion-input type="number" [(ngModel)]="pirBurstGap" ng-init="pirBurstGap=0" (ionChange)="setPirBurstGap($event)" placeholder="seconds"></ion-input>
-      </ion-item>
- 
-      <ion-item>
-       <ion-label> Long Press </ion-label>
-       <ion-icon name="bulb" item-start></ion-icon>
-       <ion-radio value = "2"></ion-radio>
+        <ion-input type="number"
+                   [(ngModel)]="pirBurstGap"
+                   ng-init="pirBurstGap=0"
+                   (ionChange)="setPirBurstGap($event)"
+                   placeholder="seconds"></ion-input>
       </ion-item>
 
-      <ion-item *ngIf="radioPirClickedBulb" >
-        <ion-label color="primary" >Long press time (s)
-        </ion-label>
-        <ion-input type="number" [(ngModel)]="pirBulbExposureTime" ng-init="pirBulbExposureTime=0" (ionChange)="setPirBulbExposureTime($event)" value="" placeholder="seconds"></ion-input>
+      <ion-item>
+        <ion-label> Long Press </ion-label>
+        <ion-icon name="bulb"
+                  item-start></ion-icon>
+        <ion-radio value="2"></ion-radio>
       </ion-item>
-      
+
+      <ion-item *ngIf="radioPirClickedBulb">
+        <ion-label color="primary">Long press time (s)
+        </ion-label>
+        <ion-input type="number"
+                   [(ngModel)]="pirBulbExposureTime"
+                   ng-init="pirBulbExposureTime=0"
+                   (ionChange)="setPirBulbExposureTime($event)"
+                   value=""
+                   placeholder="seconds"></ion-input>
+      </ion-item>
+
       <ion-item *ngIf="(make!=1)">
-       <ion-label> Video Mode </ion-label>
-       <ion-icon name="videocam" item-start></ion-icon>
-       <ion-radio value = "3"></ion-radio>
+        <ion-label> Video Mode </ion-label>
+        <ion-icon name="videocam"
+                  item-start></ion-icon>
+        <ion-radio value="3"></ion-radio>
       </ion-item>
-      
+
       <ion-item *ngIf="radioPirClickedVideo&&(make!=1)">
-        <ion-label color="primary" >Duration of the video (s)
+        <ion-label color="primary">Duration of the video (s)
         </ion-label>
-        <ion-input type="number" [(ngModel)]="pirVideoDuration" ng-init="pirVideoDuration=0" (ionChange)="setPirVideoDuration($event)" placeholder="seconds"></ion-input>
+        <ion-input type="number"
+                   [(ngModel)]="pirVideoDuration"
+                   ng-init="pirVideoDuration=0"
+                   (ionChange)="setPirVideoDuration($event)"
+                   placeholder="seconds"></ion-input>
       </ion-item>
-      
-      <ion-item *ngIf="radioPirClickedVideo" >
-        <ion-label color="primary" >Extension time (s)
+
+      <ion-item *ngIf="radioPirClickedVideo">
+        <ion-label color="primary">Extension time (s)
         </ion-label>
-        <ion-input type="number" [(ngModel)]="pirVideoExtension" ng-init="pirVideoExtension=0" (ionChange)="setPirVideoExtension($event)" placeholder="seconds"></ion-input>
+        <ion-input type="number"
+                   [(ngModel)]="pirVideoExtension"
+                   ng-init="pirVideoExtension=0"
+                   (ionChange)="setPirVideoExtension($event)"
+                   placeholder="seconds"></ion-input>
       </ion-item>
 
       <ion-item>
-       <ion-label> Half Press (Focus) </ion-label>
-       <ion-icon name="aperture" item-start></ion-icon>
-       <ion-radio value = "4"></ion-radio>
+        <ion-label> Half Press (Focus) </ion-label>
+        <ion-icon name="aperture"
+                  item-start></ion-icon>
+        <ion-radio value="4"></ion-radio>
       </ion-item>
     </ion-list>
   </ion-card>
-<!--    <ion-card-header>
+  <!--    <ion-card-header>
   <ion-badge color="primary" item-end>{{this.timerBurstGap}} s</ion-badge>
 
       Threshold
@@ -264,13 +378,26 @@
     -->
   <ion-card *ngIf="radioClickedTriggerPir">
     <ion-card-header class="card-heading">
-      <button ion-button color="primary" clear icon-only small round class="helper-btn" (click)="helperBtnClick(HB_SENSITIVITY)">
+      <button ion-button
+              color="primary"
+              clear
+              icon-only
+              small
+              round
+              class="helper-btn"
+              (click)="helperBtnClick(HB_SENSITIVITY)">
         <ion-icon name='help-circle'></ion-icon>
       </button>
-      Sensitivity <ion-badge color="primary" item-end>{{pirSensitivity}}</ion-badge>
+      Sensitivity <ion-badge color="primary"
+                 item-end>{{pirSensitivity}}</ion-badge>
     </ion-card-header>
-    <ion-item>      
-      <ion-range min="1" max="6" pin="true" [(ngModel)]="pirSensitivity" ng-init="pirSensitivity=1" (ionChange)="setPirSensitivity($event)">
+    <ion-item>
+      <ion-range min="1"
+                 max="6"
+                 pin="true"
+                 [(ngModel)]="pirSensitivity"
+                 ng-init="pirSensitivity=1"
+                 (ionChange)="setPirSensitivity($event)">
         <ion-label range-left>MIN</ion-label>
         <ion-label range-right>MAX</ion-label>
       </ion-range>
@@ -279,14 +406,25 @@
 
   <ion-card *ngIf="radioClickedTriggerPir">
     <ion-card-header class="card-heading">
-      <button ion-button color="primary" clear icon-only small round class="helper-btn" (click)="helperBtnClick(HB_INTERTRIGGERTIME)">
+      <button ion-button
+              color="primary"
+              clear
+              icon-only
+              small
+              round
+              class="helper-btn"
+              (click)="helperBtnClick(HB_INTERTRIGGERTIME)">
         <ion-icon name='help-circle'></ion-icon>
       </button>
       Inter Trigger Time
     </ion-card-header>
     <ion-item>
-      <ion-label color="dark"> Interval (s) </ion-label> 
-      <ion-input type=number [(ngModel)]="pirInterTriggerTime" ng-init="pirInterTriggerTime=5" (ionChange)="setPirInterTriggerTime($event)" placeholder="seconds"> </ion-input>   
+      <ion-label color="dark"> Interval (s) </ion-label>
+      <ion-input type=number
+                 [(ngModel)]="pirInterTriggerTime"
+                 ng-init="pirInterTriggerTime=5"
+                 (ionChange)="setPirInterTriggerTime($event)"
+                 placeholder="seconds"> </ion-input>
       <!-- Removing range as steps of 0.1s difficult to select in a range -->
       <!--
       <ion-range min="5" max="600" pin="true" step="10" snaps="true" [(ngModel)]="pirInterTriggerTime" (ionChange)="setPirInterTriggerTime($event)">
@@ -296,23 +434,29 @@
     -->
     </ion-item>
   </ion-card>
-  
-</ion-content>
 
+</ion-content>
 
 <!-- Footer which displays status messages and consists of write button -->
 <ion-footer class="positioning">
-  
+
   <ion-toolbar item-left>
     <p>{{ statusMessage }}</p>
   </ion-toolbar>
-  
 
   <!-- Button to write to the device -->
-  <button ion-button item-right *ngIf="realConnection" (click)="onButtonClickWrite()" class="move-right">
+  <button ion-button
+          item-right
+          *ngIf="realConnection"
+          (click)="onButtonClickWrite()"
+          class="move-right">
     Write
   </button>
-  <button ion-button item-right *ngIf="realConnection" (click)="onButtonClickClose()" class="move-right">
+  <button ion-button
+          item-right
+          *ngIf="realConnection"
+          (click)="onButtonClickClose()"
+          class="move-right">
     Close
   </button>
 
